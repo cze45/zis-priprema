@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ZIS – Skripta za učenje</title>
+<script>
+(function(){var t;try{t=localStorage.getItem('zis-tema');}catch(e){}
+if(t!=='light'&&t!=='dark')t='dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#e2e6ec;
+    --accent:#1f5eff; --accent-soft:#e8eeff;
+    --def:#eef4ff; --def-b:#9db8ff;
+    --ex:#effaf3; --ex-b:#8fd3a7;
+    --warn:#fff4e5; --warn-b:#f2b866;
+    --extra:#f3effb; --extra-b:#b9a3e8;
+    --must:#fde8e8; --must-ink:#a12626;
+    --code:#f0f2f6;
+  }
+  @media all{
+    :root[data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#0f141b; --card:#171e28; --ink:#e6ebf2; --muted:#9aa6b6; --line:#27313f;
+      --accent:#7aa2ff; --accent-soft:#1c2a47;
+      --def:#14233f; --def-b:#3b5fa8;
+      --ex:#12291d; --ex-b:#2f7a50;
+      --warn:#33260f; --warn-b:#a8741f;
+      --extra:#221a38; --extra-b:#6a53a8;
+      --must:#3a1818; --must-ink:#ff9a9a;
+      --code:#202a37;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:16px}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+  .layout{display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+  nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:20px 16px;border-right:1px solid var(--line);background:var(--card)}
+  nav h2{font-size:15px;margin:0 0 4px}
+  nav .sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  nav a{display:block;color:var(--ink);text-decoration:none;padding:4px 8px;border-radius:6px;font-size:14px}
+  nav a:hover{background:var(--accent-soft)}
+  nav .l{font-weight:700;margin-top:12px;color:var(--accent)}
+  nav .s{padding-left:18px;color:var(--muted)}
+  main{padding:28px clamp(16px,4vw,48px) 80px;max-width:1000px;min-width:0}
+  h1{font-size:clamp(26px,4vw,36px);line-height:1.2;margin:0 0 6px}
+  h2{font-size:26px;margin:56px 0 6px;padding-top:16px;border-top:3px solid var(--accent)}
+  h3{font-size:20px;margin:34px 0 8px}
+  h4{font-size:16px;margin:18px 0 6px}
+  p{margin:8px 0}
+  ul,ol{margin:6px 0 10px;padding-left:24px}
+  li{margin:3px 0}
+  .lead{color:var(--muted);margin-bottom:18px}
+  .box{border-left:5px solid;border-radius:8px;padding:10px 14px;margin:12px 0}
+  .box>:first-child{margin-top:0}.box>:last-child{margin-bottom:0}
+  .def{background:var(--def);border-color:var(--def-b)}
+  .ex{background:var(--ex);border-color:var(--ex-b)}
+  .warn{background:var(--warn);border-color:var(--warn-b)}
+  .extra{background:var(--extra);border-color:var(--extra-b)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 8px;border-radius:99px;margin-right:6px;vertical-align:1px}
+  .t-def{background:var(--def-b);color:#0b1a3a}
+  .t-ex{background:var(--ex-b);color:#0a2a17}
+  .t-warn{background:var(--warn-b);color:#3a2504}
+  .t-extra{background:var(--extra-b);color:#1d1040}
+  .t-must{background:var(--must);color:var(--must-ink)}
+  table{border-collapse:collapse;width:100%;margin:10px 0;background:var(--card);font-size:15px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--accent-soft)}
+  td.c,th.c{text-align:center}
+  code,.f{background:var(--code);border-radius:5px;padding:1px 6px;font-family:Consolas,"Cascadia Mono",monospace;font-size:.94em}
+  .f{display:inline-block;padding:3px 10px;margin:2px 0}
+  .big{font-size:1.1em}
+  .mono{font-family:Consolas,"Cascadia Mono",monospace}
+  .grid{overflow-x:auto}
+  .grid table{width:auto;min-width:0}
+  .grid td,.grid th{text-align:center;padding:4px 7px;font-family:Consolas,monospace;font-size:14px}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:8px 0;padding:0 14px}
+  details>summary{cursor:pointer;font-weight:600;padding:10px 0}
+  details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+  .qa{margin:10px 0}
+  .qa .q{font-weight:700}
+  .tick{list-style:none;padding-left:0}
+  .tick li{padding-left:26px;position:relative}
+  .tick li::before{content:"✔";position:absolute;left:0;color:var(--accent);font-weight:700}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer;text-decoration:none;font-size:14px}
+  .btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+  footer{margin-top:48px;color:var(--muted);font-size:13px}
+  @media (max-width:900px){
+    .layout{grid-template-columns:minmax(0,1fr)}
+    table{display:block;overflow-x:auto}
+    nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  }
+  .theme{position:fixed;top:12px;right:14px;z-index:20;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .theme:hover{border-color:var(--accent)}
+  @media print{
+    :root[data-theme="dark"]{--bg:#fff;--card:#fff;--ink:#000;--muted:#444;--line:#ccc;--accent:#1f5eff;--accent-soft:#e8eeff;--def:#eef4ff;--def-b:#9db8ff;--ex:#effaf3;--ex-b:#8fd3a7;--warn:#fff4e5;--warn-b:#f2b866;--extra:#f3effb;--extra-b:#b9a3e8;--code:#f0f2f6}
+    .theme{display:none}
+    nav,.toolbar{display:none}
+    .layout{display:block}
+    body{background:#fff;color:#000;font-size:12px}
+    h2{page-break-before:always}
+    details{display:block}
+    details>*{display:block}
+  }
+</style>
+</head>
+<body>
+<button class="theme" id="themeBtn" type="button" aria-label="Promeni temu"></button>
+<script>
+(function(){var r=document.documentElement,b=document.getElementById('themeBtn');
+function paint(){b.textContent=r.getAttribute('data-theme')==='dark'?'☀ Svetla tema':'🌙 Tamna tema';}
+b.onclick=function(){var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('zis-tema',t);}catch(e){}paint();};
+paint();})();
+</script>
+<div class="layout">
+
+<nav>
+  <h2>Skripta za učenje</h2>
+  <div class="sub">Zaštita informacionih sistema</div>
+  <a class="l" href="#kako">Kako se koristi</a>
+  <a class="l" href="#l1">Lekcija 1 · Uvod</a>
+  <a class="s" href="#t1-1">1.1 Pojmovi kriptologije</a>
+  <a class="s" href="#t1-2">1.2 Istorijat</a>
+  <a class="s" href="#t1-3">1.3 Značaj</a>
+  <a class="s" href="#t1-4">1.4 Osnovna terminologija</a>
+  <a class="s" href="#t1-5">1.5 Komunikacioni kanal</a>
+  <a class="s" href="#q1">Pitanja i odgovori</a>
+  <a class="l" href="#l2">Lekcija 2 · Sigurnost kriptosistema</a>
+  <a class="s" href="#t2-1">2.1 Algoritam i ključevi</a>
+  <a class="s" href="#t2-2">2.2 Kerkhofov princip</a>
+  <a class="s" href="#t2-3">2.3 Potpuna pretraga</a>
+  <a class="s" href="#t2-4">2.4 Sigurnost i skraćeni napad</a>
+  <a class="s" href="#t2-5">2.5 Podela klasičnih šifara</a>
+  <a class="s" href="#t2-6">2.6 Šifre transpozicije</a>
+  <a class="s" href="#t2-7">2.7 Kriptoanaliza transpozicije</a>
+  <a class="s" href="#t2-8">2.8 Supstitucija i Cezar</a>
+  <a class="s" href="#t2-9">2.9 Kriptoanaliza Cezara, statistika</a>
+  <a class="s" href="#q2">Pitanja i odgovori</a>
+  <a class="l" href="#l3">Lekcija 3 · Klasične šifre</a>
+  <a class="s" href="#t3-1">3.1 Modularna aritmetika</a>
+  <a class="s" href="#t3-2">3.2 Homofona šifra</a>
+  <a class="s" href="#t3-3">3.3 Hilova šifra</a>
+  <a class="s" href="#t3-4">3.4 Vižnerova šifra</a>
+  <a class="s" href="#t3-5">3.5 Kriptoanaliza Vižnera, IC</a>
+  <a class="s" href="#t3-6">3.6 One-time pad</a>
+  <a class="s" href="#t3-7">3.7 Kodne knjige</a>
+  <a class="s" href="#t3-8">3.8 Blokovske i protočne</a>
+  <a class="s" href="#q3">Pitanja i odgovori</a>
+  <a class="l" href="#sazetak">Sažetak za dan pred kontrolni</a>
+  <a class="s" href="#kljuc">Šta je ključ? (tabela)</a>
+  <a class="s" href="#poredjenje">Poređenje svih šifara</a>
+  <a class="s" href="#formule">Sve formule i brojevi</a>
+  <a class="s" href="#recnik">Rečnik sinonima</a>
+</nav>
+
+<main>
+
+<h1>Zaštita informacionih sistema – skripta za učenje</h1>
+<p class="lead">Obuhvata tri prezentacije: <b>01-02 Uvod</b>, <b>03-04 Sigurnost kriptosistema</b> i <b>05-06 Klasične šifre</b>. Sve što je na slajdovima je ovde – uključujući i sadržaj koji je na slajdovima bio samo u slikama (tabele, matrice, grafikoni).</p>
+
+<section id="kako">
+<h3 style="margin-top:0">Kako se koristi</h3>
+<div class="box def">
+  <p><span class="tag t-def">Pojam</span> Plavi okvir = definicija koju treba znati skoro doslovno.</p>
+  <p><span class="tag t-ex">Primer</span> Zeleni okvir = rešen primer sa slajda (prođi ga olovkom, sam ponovi račun).</p>
+  <p><span class="tag t-warn">Zamka</span> Narandžasti okvir = česta greška / nešto što se lako pobrka.</p>
+  <p><span class="tag t-extra">Van slajdova</span> Ljubičasti okvir = moje dodatno objašnjenje radi razumevanja. Nije na slajdovima, pa ga uči tek kad savladaš ostalo.</p>
+</div>
+<p><b>Preporučeni redosled:</b> pročitaj lekciju → reši pitanja na kraju lekcije <i>naglas, bez gledanja</i> → otvori <code>ZIS_Test_znanja.html</code> → ponovi one odeljke koje ti program preporuči (brojevi odeljaka 1.1, 2.4, 3.5… isti su u skripti i u programu).</p>
+<div class="toolbar"><button class="btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">Otvori sve odgovore</button><button class="btn alt" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">Zatvori sve odgovore</button><button class="btn alt" onclick="window.print()">Štampaj</button></div>
+</section>
+
+<!-- ===================================================== LEKCIJA 1 ===================================================== -->
+<h2 id="l1">Lekcija 1 · Uvod (istorijat, značaj i osnovni pojmovi kriptologije)</h2>
+
+<h3 id="t1-1">1.1 Pojmovi kriptologije</h3>
+<p><b>Poreklo reči.</b> Grčki <b>ΚΡΥΠΤΟΣ / κρυπτός = „sakriven"</b>. Od toga:</p>
+<ul>
+  <li><b>kripto + logija</b> = kriptologija (nauka)</li>
+  <li><b>kripto + grafija</b> = kriptografija (pisanje)</li>
+  <li><b>kripto + analiza</b> = kriptoanaliza</li>
+</ul>
+<table>
+  <tr><th style="width:150px">Pojam</th><th>Definicija (sa slajda)</th><th style="width:170px">Strana</th></tr>
+  <tr><td><b>Kriptologija</b></td><td>Nauka koja proučava metode zaštite – skrivanja (informacija, podataka, poruka …).</td><td>Krovni pojam (obuhvata i jedno i drugo)</td></tr>
+  <tr><td><b>Kriptografija</b></td><td>Postupci koji služe za sakrivanje informacija (poruka) tako da budu <b>čitljive samo onima kojima su namenjene</b> (enkripcija, kriptovanje).</td><td>Odbrana (štiti)</td></tr>
+  <tr><td><b>Kriptoanaliza</b></td><td>Tehnike „probijanja" (razbijanja) zaštite i otkrivanje zaštićenih sadržaja od strane <b>napadača</b> (onih kojima nisu namenjeni).</td><td>Napad (razbija)</td></tr>
+</table>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Ne mešaj: <b>kriptografija</b> = pravljenje zaštite, <b>kriptoanaliza</b> = razbijanje zaštite, <b>kriptologija</b> = nauka koja obuhvata oba.</p></div>
+
+<h3 id="t1-2">1.2 Istorijat kriptologije</h3>
+<ul>
+  <li>Potreba da se zaštite podaci pojavila se <b>kada se pojavila pisana reč, tj. pismo</b>.</li>
+  <li>Dve ere: <b>pre pojave računara – manuelna</b> (ručna) zaštita, <b>nakon pojave računara – automatska</b>. <i>Prelomna tačka između manuelnog i automatskog šifrovanja je pojava računara.</i></li>
+</ul>
+<h4>Najstariji opisani sistemi (slajd 4)</h4>
+<table>
+  <tr><th style="width:190px">Sistem</th><th>Šta je</th></tr>
+  <tr><td><b>Skitali</b> (grč. σκυτάλη)</td><td>Traka (kaiš) namotana oko štapa. Poruka se piše po štapu, odmotana traka je šifrat. <b>Šifra transpozicije.</b></td></tr>
+  <tr><td><b>Atbaš</b> (biblijski, hebrejski)</td><td>Obrnut alfabet: prvo slovo ↔ poslednje, drugo ↔ pretposlednje… Na slajdu: <span class="mono">A→Z, B→Y, C→X, D→W, E→V, F→U, G→T, H→S</span>. <b>Supstitucija.</b></td></tr>
+  <tr><td><b>Cezarova šifra</b></td><td>Pomeraj slova za 3 mesta (detalji u 2.8). <b>Supstitucija.</b></td></tr>
+  <tr><td><b>Quipu</b></td><td>Pismo sa <b>čvorovima</b> (vezice sa čvorovima).</td></tr>
+  <tr><td><b>Steganografija</b></td><td>Sakrivanje samog postojanja poruke (npr. tekst sakriven u slici).</td></tr>
+</table>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> „Atbaš" je ime nastalo od hebrejskih slova: Alef-Taw, Bet-Šin (AT-BaŠ). Quipu su koristile Inke.</p></div>
+
+<h3 id="t1-3">1.3 Značaj kriptologije</h3>
+<table>
+  <tr><th style="width:260px">Šta kriptologija obezbeđuje</th><th>Objašnjenje</th></tr>
+  <tr><td rowspan="3"><b>Bezbednost podataka</b> (informacija, poruka)</td><td><b>Poverljivost</b> (confidentiality) – podatak mogu pročitati samo ovlašćeni.</td></tr>
+  <tr><td><b>Integritet</b> (integrity) – podatak nije neovlašćeno izmenjen.</td></tr>
+  <tr><td><b>Raspoloživost</b> (availability) – podatak je dostupan kad je potreban.</td></tr>
+  <tr><td><b>Zaštita prenosa podataka</b></td><td>primer: <b>https</b></td></tr>
+  <tr><td><b>Provera identiteta</b> – autentikacija (autentifikacija)</td><td><b>digitalni sertifikati, ključevi</b></td></tr>
+  <tr><td><b>Provera prenosa podataka</b></td><td><b>heš funkcija</b> (proverava da li se podatak promenio u prenosu)</td></tr>
+</table>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Tri stuba bezbednosti podataka: <b>poverljivost – integritet – raspoloživost</b> (CIA). Autentikacija je zasebna stavka („provera identiteta"), a heš funkcija služi za <b>proveru prenosa</b> (integritet), ne za šifrovanje.</p></div>
+
+<h3 id="t1-4">1.4 Osnovna terminologija</h3>
+<table>
+  <tr><th>Pojam na srpskom</th><th>Sinonimi / engleski</th></tr>
+  <tr><td><b>kriptovanje</b></td><td>= šifrovanje = enkripcija (<i>encryption</i>)</td></tr>
+  <tr><td><b>dekriptovanje</b></td><td>= dešifrovanje = dekripcija (<i>decryption</i>)</td></tr>
+  <tr><td><b>otvoreni tekst</b></td><td>= nešifrovan podatak = <i>plain text</i></td></tr>
+  <tr><td><b>šifra</b> (u ovom značenju)</td><td>= <b>ključ</b> = <i>encryption key</i></td></tr>
+  <tr><td><b>šifrat</b></td><td>= šifrovan (kriptovan) podatak</td></tr>
+  <tr><td><b>algoritam</b></td><td>= postupak = metod</td></tr>
+  <tr><td><b>steganografija</b></td><td>skrivanje poruke tako da <b>napadač nije svestan komunikacije</b> (npr. prikrivanje teksta u slici)</td></tr>
+</table>
+<div class="box def"><p><span class="tag t-def">Pojam</span> <b>Kriptografija vs. steganografija:</b> kriptografija skriva <i>sadržaj</i> (napadač vidi da komunikacija postoji, ali ne razume je); steganografija skriva <i>samo postojanje</i> komunikacije.</p></div>
+
+<h3 id="t1-5">1.5 Komunikacioni kanal</h3>
+<table>
+  <tr><th>Uloga</th><th>Ime</th></tr>
+  <tr><td>pošiljalac</td><td><b>Alisa</b></td></tr>
+  <tr><td>primalac</td><td><b>Bob</b></td></tr>
+  <tr><td>napadač</td><td><b>Malori</b> (Cica)</td></tr>
+</table>
+<div class="box def"><p><span class="tag t-def">Pojam</span> <b>Idealan komunikacioni kanal</b> imamo kada napadač <b>ne može da pročita</b> poruke između A i B, <b>niti da ih promeni</b>.</p></div>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> „Ne može da pročita" = poverljivost, „ne može da promeni" = integritet. U praksi kanal nije idealan, pa se koristi šifrovanje.</p></div>
+
+<h3 id="q1">Pitanja sa slajda 8 – modelni odgovori</h3>
+<p>Prvo odgovori naglas, pa otvori.</p>
+<details><summary>1. Šta je kriptologija?</summary><p>Nauka koja proučava metode zaštite – skrivanja informacija, podataka, poruka. Obuhvata kriptografiju (pravljenje zaštite) i kriptoanalizu (razbijanje zaštite). Reč: kripto (sakriven) + logija.</p></details>
+<details><summary>2. Šta je kriptografija?</summary><p>Postupci koji služe za sakrivanje informacija (poruka) tako da budu čitljive samo onima kojima su namenjene (enkripcija, kriptovanje). Kripto + grafija.</p></details>
+<details><summary>3. Šta je kriptoanaliza?</summary><p>Tehnike „probijanja" (razbijanja) zaštite i otkrivanja zaštićenih sadržaja od strane napadača, tj. onih kojima poruka nije namenjena.</p></details>
+<details><summary>4. Koja je prelomna tačka između manuelnog i automatskog šifrovanja?</summary><p>Pojava računara. Pre toga – manuelno (ručno) šifrovanje, posle – automatsko.</p></details>
+<details><summary>5. Značaj šifrovanja?</summary>
+<ul>
+  <li>Bezbednost podataka: <b>poverljivost, integritet, raspoloživost</b></li>
+  <li>Zaštita prenosa podataka – <b>https</b></li>
+  <li>Provera identiteta – <b>autentikacija</b> (digitalni sertifikati, ključevi)</li>
+  <li>Provera prenosa podataka – <b>heš funkcija</b></li>
+</ul></details>
+<details><summary>6. Šta je šifrovanje / dešifrovanje?</summary><p><b>Šifrovanje</b> (kriptovanje, enkripcija) – pretvaranje otvorenog teksta u šifrat pomoću algoritma i ključa. <b>Dešifrovanje</b> (dekriptovanje, dekripcija) – vraćanje šifrata u otvoreni tekst pomoću odgovarajućeg ključa.</p></details>
+<details><summary>7. Šta je otvoreni tekst?</summary><p>Nešifrovan podatak (plain text) – poruka u izvornom, čitljivom obliku, pre šifrovanja.</p></details>
+<details><summary>8. Šta je šifrat?</summary><p>Šifrovan (kriptovan) podatak – rezultat šifrovanja otvorenog teksta.</p></details>
+<details><summary>9. Šta je steganografija?</summary><p>Skrivanje poruke tako da napadač nije ni svestan da komunikacija postoji (npr. prikrivanje teksta u slici).</p></details>
+<details><summary>10. Opiši idealni komunikacioni kanal.</summary><p>Pošiljalac Alisa i primalac Bob komuniciraju, a napadač Malori (Cica) ne može da pročita poruke između njih, niti da ih promeni.</p></details>
+
+<!-- ===================================================== LEKCIJA 2 ===================================================== -->
+<h2 id="l2">Lekcija 2 · Sigurnost kriptosistema (Kerkhofov princip i kriptoanaliza)</h2>
+
+<div class="box def">
+  <p><b>Cilj:</b> upoznati pojam i vrste ključeva za šifrovanje, sigurnost kriptosistema i Kerkhofov princip.</p>
+  <p><b>Zadaci (šest tema):</b> razlika simetrični/asimetrični metod · vrste ključeva · Kerkhofov princip · prostor ključeva i potpuna pretraga · sigurnost kriptosistema i skraćeni napad · primeri kriptoanalize klasičnih šifarskih sistema.</p>
+</div>
+
+<h3 id="t2-1">2.1 Algoritam i ključevi (simetrični i asimetrični sistem)</h3>
+<p>Za šifrovanje su potrebni: <b>algoritam</b> (postupak šifrovanja) i <b>ključevi</b> za šifrovanje/dešifrovanje.</p>
+<table>
+  <tr><th></th><th>Simetrični sistem</th><th>Asimetrični sistem</th></tr>
+  <tr><td><b>Ključevi</b></td><td>Ključ za šifrovanje i za dešifrovanje je <b>identičan</b> (isti)</td><td><b>Javni</b> ključ za šifrovanje, <b>privatni (tajni)</b> za dešifrovanje</td></tr>
+  <tr><td><b>Broj ključeva</b></td><td><b>1</b> (jedan zajednički tajni)</td><td><b>2</b> (par: javni + privatni)</td></tr>
+</table>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Kod asimetričnog: <b>javnim</b> se <b>šifruje</b>, <b>privatnim</b> se <b>dešifruje</b>. Javni ključ sme da bude svima poznat, privatni ostaje tajan.</p></div>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> Simetrični su brzi, ali traže da se ključ nekako bezbedno dostavi drugoj strani (problem distribucije ključa – vraća se kod Cezara i OTP). Asimetrični to rešavaju parom ključeva, ali su sporiji.</p></div>
+
+<h3 id="t2-2">2.2 Kerkhofov princip</h3>
+<ul>
+  <li>Za dešifrovanje je potrebno znati <b>algoritam i ključ</b>.</li>
+  <li>Napadač zna šifrat, <b>može da zna algoritam</b>, a <b>ključ mora da otkrije kriptoanalizom</b>.</li>
+</ul>
+<div class="box def"><p><span class="tag t-def t-must">Mora napamet</span> <b>Kerkhofov princip:</b> sistem treba da je siguran <b>čak i kada je sve osim ključa poznato</b>. (Sigurnost je samo u ključu, ne u tajnosti algoritma.)</p></div>
+<p><b>Zašto?</b> Teško je očuvati tajnost algoritma – naročito u doba računara i interneta.</p>
+<h4>Kerkhofov princip – praktično (slajd 5)</h4>
+<ol>
+  <li>Kriptološki sistem mora biti za napadača praktično „nerešiv".</li>
+  <li>Napadač može da zna algoritam.</li>
+  <li>Mora se omogućiti distribucija i memorisanje ključa <b>bez pismenih beleški</b>, kao i <b>jednostavna promena ključa</b> u slučaju potrebe.</li>
+  <li>Mora se omogućiti primena u komunikacijama.</li>
+  <li>Treba da bude <b>lako prenosiv</b> i upotreba ne sme da zavisi od nekoliko ljudi.</li>
+  <li>Mora biti <b>jednostavan za korišćenje</b>, sa jednostavnim pravilima.</li>
+</ol>
+
+<h3 id="t2-3">2.3 Potpuna pretraga ključeva i prostor ključeva</h3>
+<div class="box def">
+  <p><b>Potpuna pretraga ključeva</b> (brute force): da bi sigurno „razbio" šifru, napadač treba da <b>proba sve moguće ključeve</b> i proveri rezultate dešifrovanja.</p>
+  <p><b>Prostor ključeva</b> (<i>key space</i>): <b>skup svih mogućih ključeva</b>.</p>
+</div>
+<ul>
+  <li>Za veću sigurnost prostor ključeva treba da je <b>što veći</b>, da napadač ne može da ih isproba u razumnom vremenu.</li>
+  <li>Što je ključ duži, prostor je veći, pa je sigurnost veća.</li>
+  <li>U proseku se mora probati <b>polovina</b> prostora ključeva (npr. za Cezara 13 od 26).</li>
+</ul>
+
+<h3 id="t2-4">2.4 Sigurnost kriptosistema i skraćeni napad (teorijska kriptoanaliza)</h3>
+<table>
+  <tr><th>Siguran kriptosistem</th><th>Nesiguran kriptosistem</th></tr>
+  <tr><td>Najbolji napad je <b>samo potpuna pretraga ključeva</b>. Stepen sigurnosti tada zavisi <b>samo od dužine (i kompleksnosti) ključa</b>.</td><td>Postoji „<b>prečica</b>" – <b>skraćeni napad</b> (brži od potpune pretrage).</td></tr>
+</table>
+<ul>
+  <li><b>Skraćeni napad</b> = napad efikasniji od potpune pretrage.</li>
+  <li>Sigurnost kriptosistema zasniva se na određenim pretpostavkama i <b>nije egzaktno odrediva</b>. („Zato je kriptologija privlačna mnogima.")</li>
+  <li>Ciljevi kriptoanalize: otkrivanje <b>otvorenog teksta ili ključa</b>. Prihvatljivo je i otkrivanje <b>loših ključeva</b>.</li>
+</ul>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> <b>Ključ dužine 100 bita</b></p>
+  <ul>
+    <li>Prostor ključeva: <b>2<sup>100</sup></b></li>
+    <li>Potpuna pretraga u proseku: polovina → 2<sup>100</sup>/2 = <b>2<sup>99</sup></b> ključeva</li>
+    <li>Ako se testira <b>2<sup>30</sup></b> ključeva u sekundi → potrebno 2<sup>99</sup>/2<sup>30</sup> = <b>2<sup>69</sup></b> sekundi ≈ <b>18,7 × 10<sup>12</sup> godina</b></li>
+  </ul>
+  <p><b>Skraćeni napad:</b> pretpostavimo da je dovoljno proveriti <b>2<sup>60</sup></b> ključeva. Pri 2<sup>30</sup> ključeva/s → 2<sup>60</sup>/2<sup>30</sup> = <b>2<sup>30</sup></b> sekundi ≈ <b>34 godine</b>.</p>
+</div>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> Pravilo: <i>vreme = broj ključeva / brzina</i>. Stepeni se pri deljenju <b>oduzimaju</b>: 2<sup>a</sup>/2<sup>b</sup> = 2<sup>a−b</sup>. Zato je „proseku polovina" samo oduzimanje 1 u eksponentu (100 → 99).</p></div>
+
+<h3 id="t2-5">2.5 Podela klasičnih šifarskih sistema</h3>
+<table>
+  <tr><th style="width:230px">Grupa</th><th>Podgrupe</th></tr>
+  <tr><td><b>Šifre transpozicije</b> (premeštanja)</td><td>premeštanje kolona (transpozicija kolona) · dvostruko premeštanje (kolona i redova)</td></tr>
+  <tr><td><b>Šifre supstitucije</b> (zamene)</td><td>prosta zamena (<b>monoalfabetske</b> šifre) · <b>poligrami</b> · <b>polialfabetske</b> zamene</td></tr>
+  <tr><td><b>One-time pad</b></td><td>–</td></tr>
+  <tr><td><b>Kodne knjige</b></td><td>–</td></tr>
+</table>
+<div class="box def"><p><span class="tag t-def">Pojam</span> <b>Transpozicija</b> – slova se <b>premeštaju</b> (ista slova, drugi redosled). <b>Supstitucija</b> – slova se <b>menjaju</b> drugim slovima/simbolima (isti redosled, drugačija slova).</p></div>
+<p>U lekciji 3 se dodaju: homofona, Hilova (poligrafska), Vižnerova, kodne knjige, OTP, sekvencijalne i blokovske šifre.</p>
+
+<h3 id="t2-6">2.6 Šifre transpozicije</h3>
+<h4>A) Skitala (skitali)</h4>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Otvoreni tekst: <b>Ocekujem miholjsko leto</b>. Traka se omota oko štapa, tekst se piše po štapu, a odmotana traka daje šifrat.</p>
+  <p><b>Šta je ključ?</b> <b>OBIM</b> štapa = broj redova u koloni (u primeru <b>4</b>). Tekst (21 slovo) stane u 4 reda po 6 slova:</p>
+  <div class="grid"><table><tr><td>O</td><td>C</td><td>E</td><td>K</td><td>U</td><td>J</td></tr><tr><td>E</td><td>M</td><td>M</td><td>I</td><td>H</td><td>O</td></tr><tr><td>L</td><td>J</td><td>S</td><td>K</td><td>O</td><td>L</td></tr><tr><td>E</td><td>T</td><td>O</td><td></td><td></td><td></td></tr></table></div>
+  <p>Čita se kolonu po kolonu (odozgo nadole, po 4 slova): <span class="mono">OELE · CMJT · EMSO · KIK · UHO · JOL</span> → šifrat <b class="mono">OELECMJTEMSOKIKUHOJOL</b></p>
+</div>
+<p>Grupa: <b>šifra transpozicije</b>.</p>
+
+<h4>B) Transpozicija kolona</h4>
+<ol>
+  <li>Odabere se matrica sa željenim <b>brojem kolona</b>.</li>
+  <li><b>Broj redova</b> je određen dužinom otvorenog teksta.</li>
+  <li>Otvoreni tekst se <b>upiše u redove</b> matrice.</li>
+  <li>Šifrat se dobija <b>čitanjem kolona</b>.</li>
+</ol>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> matrica <b>[3 × 7]</b>, otvoreni tekst: <b>OCEKUJEM MIHOLJSKO LETO</b></p>
+  <div class="grid"><table><tr><td>O</td><td>C</td><td>E</td><td>K</td><td>U</td><td>J</td><td>E</td></tr><tr><td>M</td><td>M</td><td>I</td><td>H</td><td>O</td><td>L</td><td>J</td></tr><tr><td>S</td><td>K</td><td>O</td><td>L</td><td>E</td><td>T</td><td>O</td></tr></table></div>
+  <p>Čitanje kolona: <span class="mono">OMS · CMK · EIO · KHL · UOE · JLT · EJO</span> → šifrat <b class="mono">OMSCMKEIOKHLUOEJLTEJO</b></p>
+  <p><b>Šta je ključ?</b> <b>Broj kolona</b> (7).</p>
+</div>
+
+<h4>C) Transpozicija kolona sa ključem (ključna reč)</h4>
+<p><b>Ključ određuje redosled</b> kojim se čitaju kolone.</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> ključ <b>KOSA</b>, matrica <b>[6 × 4]</b>, otvoreni tekst <b>OCEKUJEM MIHOLJSKO LETO</b></p>
+  <p>Redni brojevi kolona određuju se prema <b>redosledu slova ključa u alfabetu</b>: A je prvo, K drugo, O treće, S četvrto (KOSA → AKOS).</p>
+  <div class="grid"><table>
+    <tr><th>K</th><th>O</th><th>S</th><th>A</th></tr>
+    <tr><th>2</th><th>3</th><th>4</th><th>1</th></tr>
+    <tr><td>O</td><td>C</td><td>E</td><td>K</td></tr>
+    <tr><td>U</td><td>J</td><td>E</td><td>M</td></tr>
+    <tr><td>M</td><td>I</td><td>H</td><td>O</td></tr>
+    <tr><td>L</td><td>J</td><td>S</td><td>K</td></tr>
+    <tr><td>O</td><td>L</td><td>E</td><td>T</td></tr>
+    <tr><td>O</td><td></td><td></td><td></td></tr>
+  </table></div>
+  <p>Čitaju se kolone redom 1, 2, 3, 4: kolona 1 (A): <span class="mono">KMOKT</span> · kolona 2 (K): <span class="mono">OUMLOO</span> · kolona 3 (O): <span class="mono">CJIJL</span> · kolona 4 (S): <span class="mono">EEHSE</span></p>
+  <p>Šifrat: <b class="mono">KMOKTOUMLOOCJIJLEEHSE</b></p>
+  <p><b>„Gde je nestao ključ – broj kolona?"</b> Broj kolona je sada određen <b>dužinom ključne reči</b> (4), a sama ključna reč određuje redosled kolona.</p>
+</div>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Poslednji red nije pun (21 slovo, 24 polja) – prazna polja se jednostavno preskaču pri čitanju kolone.</p></div>
+
+<h4>D) Dvostruka transpozicija</h4>
+<p>Zamena mesta <b>kolonama, potom redovima</b>.</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> otvoreni tekst: <b>ATTACK AT DAWN</b>, matrica <b>[5 × 3]</b> (razmaci i popuna su slovo X: <span class="mono">ATT ACK XAT XDA WNX</span>)</p>
+  <p>Kolone se permutuju (0,2,1), pa redovi (2,4,0,3,1):</p>
+  <div class="grid"><table>
+    <tr><th>Početno</th><th></th><th></th><th></th><th style="width:30px"></th><th>Posle</th><th>kol 0</th><th>kol 2</th><th>kol 1</th></tr>
+    <tr><td>red 0</td><td>A</td><td>T</td><td>T</td><td></td><td>red 2</td><td>X</td><td>T</td><td>A</td></tr>
+    <tr><td>red 1</td><td>A</td><td>C</td><td>K</td><td></td><td>red 4</td><td>W</td><td>X</td><td>N</td></tr>
+    <tr><td>red 2</td><td>X</td><td>A</td><td>T</td><td></td><td>red 0</td><td>A</td><td>T</td><td>T</td></tr>
+    <tr><td>red 3</td><td>X</td><td>D</td><td>A</td><td></td><td>red 3</td><td>X</td><td>A</td><td>D</td></tr>
+    <tr><td>red 4</td><td>W</td><td>N</td><td>X</td><td></td><td>red 1</td><td>A</td><td>K</td><td>C</td></tr>
+  </table></div>
+  <p>Šifrat (čitanje po redovima): <b class="mono">XTAWXNATTXADAKC</b></p>
+  <p><b>Ključ:</b> veličina matrice <b>[5×3]</b> i <b>permutacije kolona i redova</b> (2,4,0,3,1,0,2,1).</p>
+  <p><b>Broj mogućih šifrata:</b> <b>5! × 3! = 120 × 6 = 720</b></p>
+</div>
+<div class="box def"><p><span class="tag t-def t-must">Mora napamet</span> Za matricu <b>m × n</b> broj permutacija je <b>m! × n!</b>.</p></div>
+
+<h3 id="t2-7">2.7 Kriptoanaliza transpozicije (primer napada)</h3>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Napadač ima šifrat od <b>45 slova</b>: <span class="mono">ILILWEAHREOMEESANNDDVEGMIERWEHVEMTOSTTAONNTNH</span></p>
+  <ul>
+    <li>Moguće dimenzije matrice (delioci broja 45): <b>3×15, 15×3, 5×9 i 9×5</b>.</li>
+    <li>Mnogo mogućih permutacija: <b>5! × 9! &gt; 2<sup>25</sup></b> i <b>3! × 15! &gt; 2<sup>42</sup></b>.</li>
+    <li>Prostor ključeva je veći od <b>2<sup>42</sup></b> (≈ 10<sup>12</sup>).</li>
+    <li><b>Napad:</b> pretpostavi dimenzije (npr. 9×5). <b>Prvo pokušava da pogodi permutaciju kolona – traži smislenu reč u početnom redu.</b> (Na slajdu: kolone 0–4 se preurede u 2,4,0,1,3 pa se pojave čitljive reči.)</li>
+  </ul>
+  <p><b>„Da li postoji skraćeni napad?"</b> Da – napadač ne mora da proba sve kombinacije redova i kolona zajedno. Kolone se pogađaju zasebno (traži se smisleno u redu), pa tek onda redovi, što je mnogo manje od 5! × 9!.</p>
+</div>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Transpozicija <b>ne menja slova</b>, pa učestanost slova u šifratu = učestanosti u otvorenom tekstu. To odmah otkriva da je u pitanju transpozicija, ali ne otkriva ključ.</p></div>
+
+<h3 id="t2-8">2.8 Šifre supstitucije i Cezarova šifra</h3>
+<div class="box def">
+  <p><b>Šifre supstitucije:</b> svako slovo otvorenog teksta menja se <b>simbolom ili drugim slovom</b>. <b>Ključ je pravilo zamene.</b></p>
+  <p>Za englesko pismo postoji <b>26!</b> mogućih ključeva.</p>
+  <p><b>Najjednostavnija: monoalfabetska – prosta zamena</b>, bez promene redosleda slova u alfabetu. Primer: <b>Cezarova šifra</b>.</p>
+</div>
+<h4>Cezarova šifra</h4>
+<p>Svako slovo otvorenog teksta od A do W zamenjuje se slovom koje je <b>3 mesta dalje</b> po abecednom redu, a X, Y, Z zamenjuju se sa <b>A, B, C</b>. <b>Ključ je pomeraj.</b></p>
+<div class="grid"><table>
+  <tr><th>otvoreni</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>…</td><td>W</td><td>X</td><td>Y</td><td>Z</td></tr>
+  <tr><th>šifrat (+3)</th><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>…</td><td>Z</td><td>A</td><td>B</td><td>C</td></tr>
+</table></div>
+<h4>Matematički postupak</h4>
+<p>Svakom slovu dodeli se broj <b>A=0, B=1, C=2, … Z=25</b>.</p>
+<p><b>Šifrovanje:</b> <span class="f big">C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26</span></p>
+<p><b>Dešifrovanje:</b> <span class="f big">P<sub>i</sub> = (C<sub>i</sub> + 26 − K<sub>E</sub>) mod 26</span></p>
+<p>P<sub>i</sub> – i-to slovo otvorenog teksta · C<sub>i</sub> – i-to slovo šifrata · K<sub>E</sub> – ključ (pomeraj)</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer 1</span> Šifrovanje slova <b>Z</b>, ključ 4: P = 25 → C = (25 + 4) mod 26 = 29 mod 26 = <b>3</b> → slovo <b>D</b>.</p>
+  <p><span class="tag t-ex">Primer 2</span> Dešifrovanje slova <b>A</b>, ključ 4: C = 0 → P = (0 + 26 − 4) mod 26 = 22 → slovo <b>W</b>.</p>
+  <p>Zašto „+ 26"? Da razlika ne bi bila negativna; zbog mod 26 rezultat je isti.</p>
+</div>
+
+<h3 id="t2-9">2.9 Kriptoanaliza Cezarove šifre i statistika jezika</h3>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Šifrat: <b class="mono">CSYEVIXIVQMREXIH</b></p>
+  <ul>
+    <li>Postoji <b>26 mogućih ključeva</b> → lako izvršiti potpunu pretragu (u proseku <b>13</b>).</li>
+    <li>Ključ je <b>4</b> (svako slovo se vraća za 4: C→Y, S→O, Y→U …).</li>
+    <li>Dešifrovani tekst: <b class="mono">YOUARETERMINATED</b> („You are terminated").</li>
+  </ul>
+</div>
+<p><b>Zaključak:</b> šifra je slaba, treba proširiti prostor ključeva. Npr. ključ ne mora biti pomeraj, već <b>bilo koja permutacija slova</b> → prostor ključeva <b>26! &gt; 2<sup>88</sup></b>. <b>Problem je kako dostaviti Bobu ključ</b> (kako ga preneti i zapamtiti – 26 slova se ne pamti lako).</p>
+
+<h4>Statistika u kriptoanalizi</h4>
+<ul>
+  <li>Ako se radi o <b>zameni</b>, skraćeni postupak omogućava <b>statistika</b>.</li>
+  <li>Pretpostavka: <b>učestanost pojavljivanja slova u jeziku i simbola kojim su zamenjena u šifratu je ista</b> (najčešće slovo šifrata verovatno odgovara najčešćem slovu jezika).</li>
+</ul>
+<table>
+  <tr><th>Engleski (verovatnoća)</th><th>Srpski (% sa slajda)</th></tr>
+  <tr><td>Najčešće: <b>E 0,127</b>, T 0,091, A 0,082, O 0,075, I 0,070, N 0,067</td><td>Najčešće: <b>A 11,73</b>, I 10,5, O 10,05, E 8,66, N 6,64, R 6,14, T 5,47</td></tr>
+  <tr><td>Retka: Q, X, Z (0,001), J (0,002)</td><td>Retka: Q 0,01, W 0,02, Y 0,08, X 0,09, H 0,46</td></tr>
+</table>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> <b>Može li se statistika engleskog koristiti za dešifrovanje srpskog teksta? – Ne</b> (bar ne direktno): učestanosti se razlikuju (engleski E najčešće, srpski A, I, O, E), pa se mora koristiti statistika <i>jezika na kome je otvoreni tekst</i>.</p></div>
+
+<h4>Šta se napada čime? (kratko za kontrolni)</h4>
+<table>
+  <tr><th>Šifra</th><th>Napad</th></tr>
+  <tr><td>Skitala / transpozicija kolona</td><td>Probanje mogućih dimenzija (potpuna pretraga malog prostora ključeva), traži se smislen tekst. Statistika slova ne pomaže (slova nepromenjena).</td></tr>
+  <tr><td>Dvostruka transpozicija</td><td>Pretpostavi se dimenzija, pogađa se permutacija kolona (smislena reč u redu), zatim redova.</td></tr>
+  <tr><td>Cezar</td><td>Potpuna pretraga (26 ključeva) + statistika učestanosti.</td></tr>
+  <tr><td>Prosta zamena (26!)</td><td>Statistika učestanosti slova (skraćeni napad).</td></tr>
+</table>
+
+<h3 id="q2">Pitanja sa slajda 23 – modelni odgovori</h3>
+<details><summary>1. Koja je razlika između simetričnog i asimetričnog metoda šifrovanja?</summary><p>Kod <b>simetričnog</b> su ključevi za šifrovanje i dešifrovanje <b>identični</b>. Kod <b>asimetričnog</b> se za šifrovanje koristi <b>javni</b> ključ, a za dešifrovanje <b>privatni (tajni)</b>.</p></details>
+<details><summary>2. Koliko ključeva se koristi za asimetričan, a koliko za simetričan metod?</summary><p>Simetrični: <b>jedan</b> ključ (isti za obe operacije). Asimetrični: <b>dva</b> ključa (javni i privatni, jedan par).</p></details>
+<details><summary>3. Navedi i objasni Kerkhofov princip za siguran kriptosistem.</summary><p>Sistem treba da je siguran <b>čak i kada je sve osim ključa poznato</b>. Napadač zna šifrat i može da zna algoritam; ključ mora da otkrije kriptoanalizom. Tajnost algoritma je teško očuvati (računari, internet), pa sigurnost mora počivati samo na ključu. Praktično: ključ se lako distribuira i pamti bez beleški, lako se menja, sistem je jednostavan za upotrebu i lako prenosiv.</p></details>
+<details><summary>4. Šta znači potpuna pretraga u slučaju šifrovanja?</summary><p>Napadač proba <b>sve moguće ključeve</b> i proverava rezultate dešifrovanja (da li je dobijen smislen otvoreni tekst).</p></details>
+<details><summary>5. Šta je prostor ključeva (key space)?</summary><p>Skup <b>svih mogućih ključeva</b> nekog šifarskog sistema. Što je veći, to je potpuna pretraga duža.</p></details>
+<details><summary>6. Šta se podrazumeva pod izrazom skraćeni napad na šifarski sistem?</summary><p>Napad koji otkriva ključ ili tekst <b>brže od potpune pretrage</b> (prečica), npr. kada je dovoljno proveriti 2<sup>60</sup> umesto 2<sup>100</sup> ključeva, ili korišćenjem statistike učestanosti slova.</p></details>
+<details><summary>7. Koja je razlika između sigurnog i nesigurnog kriptosistema?</summary><p><b>Siguran:</b> najbolji napad je samo potpuna pretraga ključeva, pa sigurnost zavisi samo od dužine (i kompleksnosti) ključa. <b>Nesiguran:</b> postoji „prečica" – skraćeni napad.</p></details>
+<details><summary>8. Kako dužina ključa utiče na sigurnost kriptosistema?</summary><p>Duži ključ → veći prostor ključeva → potpuna pretraga traje duže → veća sigurnost (kod sigurnog sistema sigurnost zavisi samo od dužine i kompleksnosti ključa). Primer: 100 bita → 2<sup>100</sup> ključeva ≈ 18,7 × 10<sup>12</sup> godina pri 2<sup>30</sup> ključeva/s.</p></details>
+<details><summary>9. Kako biste opisali šifre transpozicije?</summary><p>Slova otvorenog teksta se <b>ne menjaju, već im se premešta redosled</b> (permutacija pozicija). Učestanost slova ostaje ista. Primeri: skitala, transpozicija kolona (sa ključem), dvostruka transpozicija (kolone pa redovi, m! × n! mogućnosti).</p></details>
+<details><summary>10. Kako biste opisali šifre supstitucije?</summary><p>Svako slovo otvorenog teksta se <b>menja drugim slovom ili simbolom</b>, a redosled ostaje. Ključ je pravilo zamene (26! ključeva za englesko pismo). Najjednostavnija je monoalfabetska prosta zamena (Cezar); dalje poligramske i polialfabetske.</p></details>
+<details><summary>11. Objasni šifru „skitali". Šta je ključ? U koju grupu spada? Na čemu se zasniva kriptoanaliza?</summary><p><b>Šta je:</b> traka omotana oko štapa; poruka se upiše duž štapa, odmotana traka je šifrat; primalac ima štap istog obima. Primer „Ocekujem miholjsko leto" → OELE CMJT EMSO KIK UHO JOL.<br><b>Ključ:</b> obim štapa (broj redova u koloni; u primeru 4).<br><b>Grupa:</b> šifre transpozicije (transpozicija kolona).<br><b>Kriptoanaliza:</b> prostor ključeva je mali – potpuna pretraga: probaju se sve moguće dimenzije (obimi) dok se ne dobije smislen tekst.</p></details>
+<details><summary>12. Objasni Cezarovu šifru. Šta je ključ? U koju grupu spada? Na čemu se zasniva kriptoanaliza?</summary><p><b>Šta je:</b> svako slovo se zamenjuje slovom koje je za k mesta dalje u alfabetu (klasično 3; X, Y, Z → A, B, C). C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26.<br><b>Ključ:</b> pomeraj (K<sub>E</sub>).<br><b>Grupa:</b> šifre supstitucije – monoalfabetske (prosta zamena).<br><b>Kriptoanaliza:</b> samo 26 mogućih ključeva → potpuna pretraga (u proseku 13); i statistika učestanosti slova.</p></details>
+
+<!-- ===================================================== LEKCIJA 3 ===================================================== -->
+<h2 id="l3">Lekcija 3 · Klasične šifre (homofona, Hilova, Vižnerova, kodne knjige, OTP, protočne i blokovske)</h2>
+
+<h4>Podela klasične kriptografije (slajd 2)</h4>
+<table>
+  <tr><th>Šifre transpozicije</th><th>Šifre supstitucije</th><th>One-time pad</th><th>Kodne knjige</th></tr>
+  <tr><td>transpozicija kolona<br>dvostruka transpozicija kolona</td><td>šifre proste zamene (monoalfabetske)<br>poligramske šifre<br>polialfabetske zamene</td><td>–</td><td>–</td></tr>
+</table>
+<p>Gde šta spada: <b>Cezar, Atbaš</b> → prosta zamena · <b>Hilova</b> → poligramska · <b>Vižnerova</b> → polialfabetska · <b>homofona</b> → zamena (jedno slovo → više znakova).</p>
+
+<h3 id="t3-1">3.1 Modularna aritmetika i moduo</h3>
+<div class="box def">
+  <p><b>Modularna aritmetika</b> je aritmetika sa celim brojevima u kojoj računske operacije daju kao rezultat brojeve od <b>0 do n−1</b> za moduo <b>n</b>.</p>
+  <p>Koristi se za računanja kod kojih se <b>broji do maksimalne vrednosti i potom počinje od najmanjeg</b>.</p>
+</div>
+<p><b>Primer sa slajda:</b> dani u godini. Prosta godina nema 366. i 367. dan (već su to 1. i 2. dan sledećeg ciklusa).</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Brojevi</span> mod 26 (alfabet): 29 mod 26 = 3 · 30 mod 26 = 4 · 26 mod 26 = 0 · 316 mod 26 = 4 (316 = 12·26 + 4)</p>
+</div>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> mod je <b>ostatak pri deljenju</b>. Negativne vrednosti: (−4) mod 26 = 22 (dodaj 26). Zato je u dešifrovanju „+ 26 − K": to isto što i „− K", samo bez negativnih brojeva.</p></div>
+
+<h3 id="t3-2">3.2 Homofona šifra</h3>
+<ul>
+  <li>Šifrat treba da <b>prikrije statističke karakteristike otvorenog teksta</b> ⇒ treba da <b>izgleda kao slučajan niz karaktera</b> (to je teško ostvarivo).</li>
+  <li>Jedno rešenje je <b>proširenje skupa znakova za šifrovanje</b>: šifrat ima <b>više od 26 znakova</b>, a otvoreni tekst koristi 26 slova → to je <b>homofona šifra</b>.</li>
+  <li>Većina slova ima po jedan znak, a <b>neka slova (najfrekventnija) mogu da se predstave na više načina</b>.</li>
+  <li><b>Otporna</b> na statistički napad, <b>ranjiva</b> na napade poznatog dela otvorenog teksta.</li>
+</ul>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Slovima se pridružuju dvocifreni brojevi od <b>00 do 31</b> (32 oznake). Svaki par cifara u šifratu jednoznačno odgovara jednom slovu, osim slova <b>A, E, N, O, R, T</b> (32 − 26 = 6) koja imaju po <b>dve kombinacije</b> (najfrekventnija slova).</p>
+  <div class="grid"><table>
+    <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th></tr>
+    <tr><td>01, 07</td><td>14</td><td>21</td><td>04</td><td>13, 17</td><td>20</td><td>29</td><td>31</td><td>06</td><td>28</td><td>12</td><td>30</td><td>27</td></tr>
+  </table>
+  <table>
+    <tr><th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th></tr>
+    <tr><td>00, 18</td><td>26, 19</td><td>09</td><td>10</td><td>25, 23</td><td>02</td><td>08, 24</td><td>22</td><td>05</td><td>16</td><td>15</td><td>11</td><td>03</td></tr>
+  </table></div>
+  <p>Otvoreni tekst <b>TEETH</b> → T=08, E=13, E=17, T=24, H=31 → šifrat <b class="mono">08 13 17 24 31</b>. Vidi: isto slovo (E, T) je dalo različite brojeve, pa se učestanost „izravnala".</p>
+</div>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Zašto baš <b>A E N O R T</b>? To su najfrekventnija slova (za engleski) – ona „odaju" ključ statistikom, pa dobijaju više znakova. Slabost: ako napadač zna deo otvorenog teksta, uparuje ga sa šifratom i otkriva deo ključa.</p></div>
+
+<h3 id="t3-3">3.3 Poligramske šifre – Hilova šifra</h3>
+<div class="box def">
+  <p><b>Poligramske šifre:</b> otvoreni tekst se deli u <b>blokove (n-grame)</b> i <b>svaki se blok šifruje kao jedna celina</b>. Npr. ABA → RTS, ABB → TTL. Blok od dva slova = <b>bigram</b>, od tri = <b>trigram</b>.</p>
+  <p><b>Hilova šifra</b> je <b>preteča savremenih blokovskih šifri</b>. Predstavlja šifru zamene i koristi <b>linearnu algebru</b>. Prikriva strukturu jezika i učestanost pojedinačnih slova.</p>
+</div>
+<p>Otvoreni tekst se podeli u blokove dužine <b>n</b> (P<sub>i</sub>). Svaki blok se upisuje u jednu <b>kolonu</b> (vektor).</p>
+<p><b>Šifrovanje:</b> <span class="f big">C<sub>i</sub> = A × P<sub>i</sub> (mod 26)</span> &nbsp; <b>Dešifrovanje:</b> <span class="f big">P<sub>i</sub> = A<sup>−1</sup> × C<sub>i</sub> (mod 26)</span></p>
+<p><b>Ključ</b> je matrica <b>A</b> dimenzije n × n; broj mogućih ključeva (po slajdu) je <b>26<sup>n²</sup></b> (za n = 2: 26<sup>4</sup> = 456 976).</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> n = 2, <b>A = [[22, 13], [11, 5]]</b>. Slova: A=0 … Z=25.</p>
+  <p>Otvoreni tekst <b>MEETMEHERE</b> → 12, 4, 4, 19, 12, 4, 7, 4, 17, 4 → blokovi: P<sub>0</sub>=(12,4) P<sub>1</sub>=(4,19) P<sub>2</sub>=(12,4) P<sub>3</sub>=(7,4) P<sub>4</sub>=(17,4)</p>
+  <p>Račun za C<sub>0</sub>: 22·12 + 13·4 = 264 + 52 = 316 → 316 mod 26 = <b>4</b> (E)<br>
+     11·12 + 5·4 = 132 + 20 = 152 → 152 mod 26 = <b>22</b> (W)</p>
+  <p>Dobija se: C<sub>0</sub>=(4,22) C<sub>1</sub>=(23,9) C<sub>2</sub>=(4,22) C<sub>3</sub>=(24,19) C<sub>4</sub>=(10,25)</p>
+  <p>Šifrat: <b class="mono">EWXJEWYTKZ</b></p>
+  <p>Primeti: blok „ME" se pojavljuje dva puta i oba puta daje „EW" – isti blok → isti šifrat.</p>
+</div>
+<h4>Kriptoanaliza Hilove šifre (mane)</h4>
+<ul>
+  <li>Matrice se mogu rešavati <b>linearnim jednačinama</b>, a one se relativno lako rešavaju.</li>
+  <li><b>Šifre koje koriste linearne jednačine nisu jake.</b> Jake šifre ne treba da budu potpuno linearne.</li>
+  <li>Napadaču pomaže ako zna <b>deo otvorenog teksta</b> – uz poznavanje šifrata može da <b>rekonstruiše ključ</b> (napad poznatog otvorenog teksta).</li>
+</ul>
+<div class="box extra">
+  <p><span class="tag t-extra">Van slajdova</span> <b>Zašto A mora imati inverz mod 26:</b> za dešifrovanje treba A<sup>−1</sup>. Inverz postoji samo ako je determinanta uzajamno prosta sa 26 (nije deljiva sa 2 ni sa 13).</p>
+  <p>Za primer: det = 22·5 − 13·11 = 110 − 143 = −33 ≡ 19 (mod 26). Inverz od 19 je 11 (19·11 = 209 = 8·26 + 1). A<sup>−1</sup> = 11 · [[5, −13], [−11, 22]] ≡ <b>[[3, 13], [9, 8]]</b> (mod 26). Provera: A × A<sup>−1</sup> = I.</p>
+</div>
+
+<h3 id="t3-4">3.4 Vižnerova šifra (polialfabetska)</h3>
+<div class="box def">
+  <p><b>Polialfabetska zamena</b> koristi <b>višestruke supstitucije</b> – tako <b>eliminiše preslikavanje frekvencija</b> pojavljivanja slova otvorenog teksta u njihove zamene u šifratu.</p>
+  <p><b>Vižnerova šifra</b> = polialfabetska šifra supstitucije = <b>višestruka Cezarova šifra</b>. Za svako slovo koristi se drugi alfabet.</p>
+</div>
+<table>
+  <tr><th>Cezar</th><th>Vižner</th></tr>
+  <tr><td><span class="f">C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26</span><br>K<sub>E</sub> – ključ, <b>fiksni pomeraj</b></td><td><span class="f">C<sub>i</sub> = (P<sub>i</sub> + K<sub>i (mod m)</sub>) mod 26</span><br>K<sub>i</sub> – ključ, <b>podskup od m brojeva</b> iz skupa {0,1,2,…,25}</td></tr>
+</table>
+<p><b>Postupak:</b> C<sub>0</sub> = (P<sub>0</sub> + K<sub>0</sub>) mod 26, C<sub>1</sub> = (P<sub>1</sub> + K<sub>1</sub>) mod 26, … C<sub>m−1</sub> = (P<sub>m−1</sub> + K<sub>m−1</sub>) mod 26, a zatim se ključ <b>ponavlja</b>: C<sub>m</sub> = (P<sub>m</sub> + K<sub>0</sub>) mod 26 …</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Ključ: <b>LIMUN</b> (m = 5), otvoreni tekst: <b>NAPADIUZORU</b></p>
+  <div class="grid"><table>
+    <tr><th>O.T.</th><td>N</td><td>A</td><td>P</td><td>A</td><td>D</td><td>I</td><td>U</td><td>Z</td><td>O</td><td>R</td><td>U</td></tr>
+    <tr><th>ključ</th><td>L</td><td>I</td><td>M</td><td>U</td><td>N</td><td>L</td><td>I</td><td>M</td><td>U</td><td>N</td><td>L</td></tr>
+    <tr><th>brojevi</th><td>13+11</td><td>0+8</td><td>15+12</td><td>0+20</td><td>3+13</td><td>8+11</td><td>20+8</td><td>25+12</td><td>14+20</td><td>17+13</td><td>20+11</td></tr>
+    <tr><th>mod 26</th><td>24</td><td>8</td><td>1</td><td>20</td><td>16</td><td>19</td><td>2</td><td>11</td><td>8</td><td>4</td><td>5</td></tr>
+    <tr><th>šifrat</th><td><b>Y</b></td><td><b>I</b></td><td><b>B</b></td><td><b>U</b></td><td><b>Q</b></td><td><b>T</b></td><td><b>C</b></td><td><b>L</b></td><td><b>I</b></td><td><b>E</b></td><td><b>F</b></td></tr>
+  </table></div>
+  <p>Šifrat: <b class="mono">YIBUQTCLIEF</b></p>
+  <p><b>Pomoću tabele (Vižnerov kvadrat 26×26):</b> slovo ključa određuje <b>red</b>, slovo otvorenog teksta određuje <b>kolonu</b>, šifrat je slovo u preseku.</p>
+</div>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Isto slovo otvorenog teksta daje <b>različita slova</b> šifrata u zavisnosti od pozicije (u primeru A→I i A→U; a „I" u šifratu potiče od A i od O). Zato se učestanosti slova „razmazuju".</p></div>
+
+<h3 id="t3-5">3.5 Kriptoanaliza Vižnerove šifre i indeks koincidencije</h3>
+<p>Vižnerova šifra <b>ne može da se „razbije" direktnom primenom statističke analize</b> (jer je polialfabetska).</p>
+<h4>Postupak napada</h4>
+<ol>
+  <li><b>Odrediti dužinu ključa</b> (m) – preko <b>indeksa koincidencije</b>.</li>
+  <li><b>Grupisati pozicije:</b> 1, m+1, 2m+1, 3m+1… · 2, m+2, 2m+2… · 3, m+3, 2m+3… · … · m−1, 2m−1, 3m−1…</li>
+  <li><b>Statistička analiza svake grupe</b> (svaka grupa je običan Cezar sa jednim pomerajem).</li>
+</ol>
+<div class="box ex"><p>Za m = 4 i šifrat od 12 slova: grupa 1 = pozicije 1, 5, 9 · grupa 2 = 2, 6, 10 · grupa 3 = 3, 7, 11 · grupa 4 = 4, 8, 12.</p></div>
+
+<h4>Indeks koincidencije (IC)</h4>
+<div class="box def">
+  <p><b>Indeks koincidencije</b> određuje <b>verovatnoću da su dva slučajno izabrana slova nekog teksta identična</b>. Verovatnoća da se izabere određeno slovo zavisi od jezika.</p>
+</div>
+<ul>
+  <li>Tekst od <b>n</b> slova: n<sub>0</sub> = broj slova A, n<sub>1</sub> = broj B-ova … n<sub>25</sub> = broj Z-ova; <b>n = n<sub>0</sub> + n<sub>1</sub> + … + n<sub>25</sub></b> (ukupan broj slova u šifratu).</li>
+  <li>Za dva slova A: <span class="f">(n<sub>0</sub>/n) · ((n<sub>0</sub>−1)/(n−1))</span>, a za bilo koja dva ista slova se sabira po svim slovima:</li>
+</ul>
+<p><span class="f big">I = Σ (n<sub>i</sub>/n) · ((n<sub>i</sub>−1)/(n−1)) &nbsp;=&nbsp; Σ p<sub>i</sub>² ≈ 0,065</span> &nbsp; <b>za prostu zamenu</b> (engleski jezik)</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Brojevi koje treba znati</span></p>
+  <ul>
+    <li>Prosta zamena / običan tekst (engleski): <b>I ≈ 0,065</b></li>
+    <li>Ako su sva slova podjednako verovatna: p<sub>i</sub> = 1/26 → I = 26 · (1/26)² = 1/26 ≈ <b>0,03846</b></li>
+    <li>Polialfabetske šifre <b>dugih ključeva</b>: <b>I ≈ 0,03846</b> (teže da ujednače učestanost slova)</li>
+  </ul>
+</div>
+<p><b>Tablica učestanosti za engleski (sa slajda 13):</b></p>
+<div class="grid"><table>
+  <tr><th>slovo</th><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td><td>f</td><td>g</td><td>h</td><td>i</td><td>j</td><td>k</td><td>l</td><td>m</td></tr>
+  <tr><th>učest.</th><td>.082</td><td>.015</td><td>.028</td><td>.043</td><td>.127</td><td>.022</td><td>.020</td><td>.061</td><td>.070</td><td>.002</td><td>.008</td><td>.040</td><td>.024</td></tr>
+  <tr><th>slovo</th><td>n</td><td>o</td><td>p</td><td>q</td><td>r</td><td>s</td><td>t</td><td>u</td><td>v</td><td>w</td><td>x</td><td>y</td><td>z</td></tr>
+  <tr><th>učest.</th><td>.067</td><td>.075</td><td>.019</td><td>.001</td><td>.060</td><td>.063</td><td>.091</td><td>.028</td><td>.010</td><td>.023</td><td>.001</td><td>.020</td><td>.001</td></tr>
+</table></div>
+
+<h4>Kako IC otkriva dužinu ključa</h4>
+<p>Dužina šifrata <b>n</b>, dužina ključa <b>k</b>. Šifrat se upiše u matricu sa <b>k kolona</b> i <b>n/k redova</b>. Slučajno biramo 2 slova:</p>
+<ul>
+  <li>iz <b>iste kolone</b> – to je šifra proste zamene (isti pomeraj) → verovatnoća ista slova: <span class="f">((n/k − 1)/(n − 1)) · 0,065</span></li>
+  <li>iz <b>različitih kolona</b> – podjednaka verovatnoća pojavljivanja → <span class="f">((n − n/k)/(n − 1)) · 0,03846</span></li>
+</ul>
+<p>Zbir daje: <span class="f">I ≈ ((n/k − 1)/(n − 1))·0,065 + ((n − n/k)/(n − 1))·0,03846</span></p>
+<p>Rešavanjem po <b>k</b> (dužina ključa) dobija se (n – dužina šifrata, I – indeks izračunat iz šifrata):</p>
+<p><span class="f big">k ≈ 0,027·n / ((n − 1)·I + 0,065 − 0,0385·n)</span></p>
+<div class="box warn"><p><span class="tag t-warn">Zamka</span> Na slajdu 15 je u imeniocu napisano „+ 0,065 + 0,3846 n". Ako ga izvedeš iz formule iznad, dobiješ <b>minus</b> ispred člana sa n (0,0385·n), što ovde i koristim; slajd je verovatno štamparska greška. Proveri sa predavačem ako te zanima kako računa na kontrolnom.</p></div>
+<div class="box extra">
+  <p><span class="tag t-extra">Van slajdova</span> Zdrava logika bez formule: <b>visok IC (blizu 0,065)</b> ⇒ šifrat se ponaša kao jedna prosta zamena (kratak ključ / monoalfabetska). <b>IC blizu 0,0385</b> ⇒ slova su ujednačena (dug ključ). Probaju se redom k = 1, 2, 3… i bira se k za koji kolone daju IC ≈ 0,065.</p>
+  <p>Primer provere formule: n = 600, k = 4 → I ≈ (149/599)·0,065 + (450/599)·0,03846 ≈ 0,01617 + 0,02889 = 0,04506. Obrnuto: k ≈ 0,027·600 / (599·0,04506 + 0,065 − 23,1) = 16,2/3,96 ≈ 4,1 ≈ 4. ✔</p>
+</div>
+
+<h4>Slabost Vižnerove šifre</h4>
+<ul>
+  <li>Osnovna slabost: <b>relativno kratak ključ koji se ponavlja</b>.</li>
+  <li>Kada se otkrije dužina ključa, <b>šifrat se može posmatrati kao niz Cezarovih šifara</b>, koje se pojedinačno jednostavno razbijaju.</li>
+  <li>Pomoglo bi <b>povećanje dužine ključa tako da se ne ponavlja</b> (u krajnjem slučaju → one-time pad).</li>
+</ul>
+
+<h3 id="t3-6">3.6 One-time pad (Vernamova šifra)</h3>
+<div class="box def">
+  <p><b>OTP (Vernamova šifra) je jedina dokazano sigurna šifra.</b> Nepraktična za većinu situacija, jer <b>ključ mora biti jednak ili duži od otvorenog teksta</b>.</p>
+</div>
+<ul>
+  <li>Radi direktno nad <b>binarnim podacima</b>. Ključ K<sub>i</sub> je <b>slučajan, ranije definisan niz</b> (slova/bita).</li>
+  <li>Šifrat se dobija primenom <b>XOR</b> (ekskluzivno ILI) na otvoreni tekst i ključ (u binarnom formatu): <span class="f big">C<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub></span></li>
+  <li>Dešifrovanje je isti postupak: <span class="f big">C<sub>i</sub> ⊕ K<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub> ⊕ K<sub>i</sub> = P<sub>i</sub></span></li>
+  <li><b>Ključevi se uništavaju odmah nakon primene.</b></li>
+</ul>
+<table style="width:auto"><tr><th class="c">a</th><th class="c">b</th><th class="c">a ⊕ b</th></tr>
+<tr><td class="c">0</td><td class="c">0</td><td class="c">0</td></tr><tr><td class="c">0</td><td class="c">1</td><td class="c">1</td></tr><tr><td class="c">1</td><td class="c">0</td><td class="c">1</td></tr><tr><td class="c">1</td><td class="c">1</td><td class="c">0</td></tr></table>
+<p>XOR: izlaz je 1 kada su bitovi <b>različiti</b>, a 0 kada su <b>isti</b>. Zato je x ⊕ x = 0 i x ⊕ 0 = x.</p>
+<div class="box ex">
+  <p><span class="tag t-ex">Primer</span> Alfabet od 8 slova i njihovi kodovi: <span class="mono">E=000, H=001, I=010, K=011, L=100, R=101, S=110, T=111</span></p>
+  <p>Otvoreni tekst: <b>THREE HILLS</b> · Ključ (mora biti dužine teksta): <b>TRSRTLERSE</b> · Šifrat: <b>ELKRTRIHIS</b></p>
+  <div class="grid"><table>
+    <tr><th>Otvoreni tekst</th><td>T</td><td>H</td><td>R</td><td>E</td><td>E</td><td>H</td><td>I</td><td>L</td><td>L</td><td>S</td></tr>
+    <tr><th>Kod</th><td>111</td><td>001</td><td>101</td><td>000</td><td>000</td><td>001</td><td>010</td><td>100</td><td>100</td><td>110</td></tr>
+    <tr><th>Ključ</th><td>111</td><td>101</td><td>110</td><td>101</td><td>111</td><td>100</td><td>000</td><td>101</td><td>110</td><td>000</td></tr>
+    <tr><th>Šifrat (kod)</th><td>000</td><td>100</td><td>011</td><td>101</td><td>111</td><td>101</td><td>010</td><td>001</td><td>010</td><td>110</td></tr>
+    <tr><th>Šifrat</th><td><b>E</b></td><td><b>L</b></td><td><b>K</b></td><td><b>R</b></td><td><b>T</b></td><td><b>R</b></td><td><b>I</b></td><td><b>H</b></td><td><b>I</b></td><td><b>S</b></td></tr>
+  </table></div>
+  <p><b>Dešifrovanje:</b> isti ključ, isti XOR: 000⊕111 = 111 → T; 100⊕101 = 001 → H; 011⊕110 = 101 → R … = THREE HILLS.</p>
+</div>
+<h4>Kriptoanaliza OTP / uslovi za ključ</h4>
+<ul>
+  <li>Praktično i teorijski <b>najbezbednija</b> šifra. Bezbednost se bazira na <b>slučajnosti ključa</b> i na <b>jednokratnoj upotrebi ključa</b>.</li>
+  <li>Binarni ključ mora biti:
+    <ul>
+      <li><b>nepredvidiv</b> – nezavisno od broja poznatih bitova ključa, verovatnoća pogađanja narednog bita nije veća od <b>1/2</b></li>
+      <li><b>balansiran</b> – odnos 0 i 1 podjednak</li>
+      <li>(+ dužine bar kao otvoreni tekst, i <b>jednokratan</b>)</li>
+    </ul></li>
+</ul>
+<table>
+  <tr><th>Dobre strane</th><th>Mane</th></tr>
+  <tr><td>Dokazano najbezbednija (teorijski i praktično); jednostavan XOR; šifrat ne odaje statistiku.</td><td>Ključ mora biti <b>dug koliko i tekst</b>; mora biti pravi slučajni niz; svaki ključ se koristi <b>jednom</b> i uništava; teška <b>distribucija ključeva</b> (nepraktično za većinu situacija).</td></tr>
+</table>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> Zašto jednokratno? Ako se isti ključ upotrebi dva puta, C<sub>1</sub> ⊕ C<sub>2</sub> = P<sub>1</sub> ⊕ P<sub>2</sub> – ključ „ispadne", a ostaje razlika dva otvorena teksta koja se može analizirati.</p></div>
+
+<h3 id="t3-7">3.7 Kodne knjige</h3>
+<ul>
+  <li>Koristi se <b>rečnik koji uparuje reči i kodne oznake</b>. Svaka reč ima sopstveni kod, npr. <b>Februar = 13605, fest = 13732, finansije = 13850</b>…</li>
+  <li>Za šifrovanje se koristi <b>jedan primerak knjige</b>, a drugi za dešifrovanje.</li>
+  <li><b>Ključ je – kodna knjiga.</b></li>
+  <li>Sigurnost šifarskog sistema zasniva se na <b>fizičkoj bezbednosti kodne knjige</b>.</li>
+</ul>
+
+<h3 id="t3-8">3.8 Blokovske i protočne šifre</h3>
+<p>Savremena <b>simetrična</b> kriptografija deli se na:</p>
+<table>
+  <tr><th style="width:240px">Protočne (sekvencijalne, streaming) šifre</th><th>Blokovske šifre</th></tr>
+  <tr><td>Algoritmi se primenjuju na <b>bit (karakter ili bajt)</b>, jedan po jedan.</td><td>Otvoreni tekst se deli u <b>blokove od 64 (128 ili više) bita</b>, pa se <b>svaki blok šifruje nezavisno</b>.</td></tr>
+</table>
+<div class="box extra"><p><span class="tag t-extra">Van slajdova</span> Veza sa ranijim: OTP je „protočna" šifra (bit po bit XOR); Hilova šifra je preteča blokovskih (blok slova → blok slova).</p></div>
+
+<h3 id="q3">Pitanja sa slajda 23 – modelni odgovori</h3>
+<details><summary>1. Kako homofona šifra onemogućava statističko određivanje ključa?</summary><p>Proširuje skup znakova šifrata (više od 26 znakova za 26 slova). Najfrekventnija slova (npr. A, E, N, O, R, T) dobijaju po <b>više</b> različitih znakova, pa se učestanosti izravnaju i šifrat liči na slučajan niz. Ranjiva je na napad poznatog dela otvorenog teksta.</p></details>
+<details><summary>2. Objasni šifrovanje Hilovom šifrom.</summary><p>Otvoreni tekst se deli u blokove dužine n, slova se prevedu u brojeve (A=0 … Z=25) i svaki blok je kolona P<sub>i</sub>. Ključ je matrica A (n×n). <b>C<sub>i</sub> = A × P<sub>i</sub> mod 26</b>, a dešifrovanje <b>P<sub>i</sub> = A<sup>−1</sup> × C<sub>i</sub> mod 26</b>. Primer: n = 2, A = [[22,13],[11,5]], MEETMEHERE → EWXJEWYTKZ. Poligramska šifra, preteča blokovskih.</p></details>
+<details><summary>3. Koje su osnovne mane Hilove šifre?</summary><p>Linearna je – rešava se sistemom <b>linearnih jednačina</b>, a šifre koje koriste linearne jednačine nisu jake. Ako napadač zna deo otvorenog teksta (i šifrat), može da rekonstruiše ključ. (Dodatno: isti blok uvek daje isti šifrat.)</p></details>
+<details><summary>4. Objasni šifrovanje Vižnerovom (polialfabetskom) šifrom.</summary><p>Višestruka Cezarova šifra: ključna reč dužine m daje m pomeraja. <b>C<sub>i</sub> = (P<sub>i</sub> + K<sub>i mod m</sub>) mod 26</b>. Svako slovo ima drugi alfabet, pa se frekvencije slova otvorenog teksta ne preslikavaju direktno u šifrat. Ključ se ponavlja. Primer: LIMUN + NAPADIUZORU → YIBUQTCLIEF. Može i pomoću tabele (red = slovo ključa, kolona = slovo teksta).</p></details>
+<details><summary>5. Šta se koristi za kriptoanalizu Vižnerove šifre i kako?</summary><p><b>Indeks koincidencije</b> (verovatnoća da su dva slučajno izabrana slova ista; ≈0,065 za prostu zamenu, ≈0,03846 za ujednačen/dug ključ) služi da se odredi <b>dužina ključa</b>. Zatim se pozicije grupišu (1, m+1, 2m+1…; 2, m+2…) i svaka grupa se statistički analizira kao Cezarova šifra.</p></details>
+<details><summary>6. Objasni upotrebu One-time-pad šifre.</summary><p>Ključ je slučajan binarni niz jednak dužini otvorenog teksta. Šifrovanje: C<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub> (XOR). Dešifrovanje: C<sub>i</sub> ⊕ K<sub>i</sub> = P<sub>i</sub>. Ključ se koristi samo jednom i odmah uništava. Primer: THREE HILLS + TRSRTLERSE → ELKRTRIHIS.</p></details>
+<details><summary>7. Koje uslove treba da ispuni OTP ključ?</summary><p>Slučajan (<b>nepredvidiv</b> – verovatnoća pogađanja narednog bita ne veća od 1/2, bez obzira koliko bitova je poznato), <b>balansiran</b> (podjednak odnos 0 i 1), dužine bar kao otvoreni tekst i <b>jednokratan</b> (uništava se nakon upotrebe).</p></details>
+<details><summary>8. Koje su dobre strane, a šta mane OTP?</summary><p><b>Dobro:</b> jedina dokazano sigurna šifra, teorijski i praktično najbezbednija. <b>Mane:</b> ključ mora biti jednak ili duži od teksta, mora biti prava slučajna sekvenca, jednokratan, teška distribucija ključeva → nepraktična za većinu situacija.</p></details>
+<details><summary>9. Objasni upotrebu kodne knjige. Šta je ključ?</summary><p>Rečnik koji upari reči i kodne oznake (Februar = 13605, fest = 13732, finansije = 13850). Pošiljalac šifruje jednim primerkom knjige, primalac dešifruje drugim. <b>Ključ je kodna knjiga.</b> Sigurnost zavisi od fizičke bezbednosti knjige.</p></details>
+<details><summary>10. Objasni sekvencijalne (protočne) šifre.</summary><p>Savremene simetrične šifre kod kojih se algoritam primenjuje na <b>pojedinačni bit (karakter ili bajt)</b> – podaci se šifruju kao tok (stream).</p></details>
+<details><summary>11. Objasni blokovske šifre.</summary><p>Savremene simetrične šifre kod kojih se otvoreni tekst deli u <b>blokove od 64 (128 ili više) bita</b> i svaki blok se šifruje nezavisno. (Hilova šifra je njihova preteča.)</p></details>
+
+<!-- ===================================================== SAŽETAK ===================================================== -->
+<h2 id="sazetak">Sažetak za dan pred kontrolni</h2>
+
+<h3 id="kljuc">Šta je ključ? (omiljeno pitanje)</h3>
+<table>
+  <tr><th>Šifra</th><th>Grupa</th><th>Šta je ključ</th></tr>
+  <tr><td>Skitala</td><td>transpozicija</td><td><b>obim</b> štapa (broj redova u koloni) – npr. 4</td></tr>
+  <tr><td>Transpozicija kolona</td><td>transpozicija</td><td><b>broj kolona</b></td></tr>
+  <tr><td>Transpozicija kolona sa ključem</td><td>transpozicija</td><td><b>ključna reč</b> (njena dužina = broj kolona, njen redosled = redosled čitanja kolona)</td></tr>
+  <tr><td>Dvostruka transpozicija</td><td>transpozicija</td><td><b>veličina matrice + permutacije kolona i redova</b></td></tr>
+  <tr><td>Cezar</td><td>supstitucija (mono)</td><td><b>pomeraj</b> (K<sub>E</sub>)</td></tr>
+  <tr><td>Prosta zamena (opšta)</td><td>supstitucija (mono)</td><td>pravilo zamene = <b>permutacija alfabeta</b> (26!)</td></tr>
+  <tr><td>Homofona</td><td>supstitucija</td><td>tabela slova → (više) znakova</td></tr>
+  <tr><td>Hil</td><td>supstitucija (poligramska)</td><td><b>matrica A</b> (n×n)</td></tr>
+  <tr><td>Vižner</td><td>supstitucija (polialfabetska)</td><td><b>ključna reč</b> = niz od m pomeraja</td></tr>
+  <tr><td>OTP</td><td>–</td><td><b>slučajan binarni niz</b> jednak (ili duži) tekstu, jednokratan</td></tr>
+  <tr><td>Kodna knjiga</td><td>–</td><td><b>kodna knjiga</b> (rečnik reč ↔ kod)</td></tr>
+  <tr><td>Simetrični sistem</td><td>–</td><td>isti tajni ključ za šifrovanje i dešifrovanje (1 ključ)</td></tr>
+  <tr><td>Asimetrični sistem</td><td>–</td><td>javni (šifrovanje) + privatni (dešifrovanje) = 2 ključa</td></tr>
+</table>
+
+<h3 id="poredjenje">Poređenje šifara (napad / slabost)</h3>
+<table>
+  <tr><th>Šifra</th><th>Prostor ključeva</th><th>Slabost / napad</th></tr>
+  <tr><td>Skitala, transp. kolona</td><td>mali</td><td>potpuna pretraga dimenzija; slova nepromenjena</td></tr>
+  <tr><td>Dvostruka transpozicija</td><td>m! × n! (npr. 5!×3! = 720)</td><td>pogađanje permutacija kolona pa redova (smislena reč)</td></tr>
+  <tr><td>Cezar</td><td>26 (u proseku 13 pokušaja)</td><td>potpuna pretraga, statistika</td></tr>
+  <tr><td>Prosta zamena</td><td>26! &gt; 2<sup>88</sup></td><td>statistika učestanosti slova; problem distribucije ključa</td></tr>
+  <tr><td>Homofona</td><td>–</td><td>otporna na statistiku; ranjiva na poznati deo otvorenog teksta</td></tr>
+  <tr><td>Hil</td><td>26<sup>n²</sup></td><td>linearna → linearne jednačine; poznati deo otvorenog teksta</td></tr>
+  <tr><td>Vižner</td><td>–</td><td>kratak ključ koji se ponavlja → indeks koincidencije → grupisanje → niz Cezara</td></tr>
+  <tr><td>OTP</td><td>–</td><td>nema (dokazano sigurna); nepraktična (dug ključ, distribucija)</td></tr>
+  <tr><td>Kodna knjiga</td><td>–</td><td>zavisi od fizičke bezbednosti knjige</td></tr>
+</table>
+
+<h3 id="formule">Sve formule i brojevi na jednom mestu</h3>
+<table>
+  <tr><th style="width:290px">Šta</th><th>Formula / vrednost</th></tr>
+  <tr><td>Cezar – šifrovanje</td><td>C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26</td></tr>
+  <tr><td>Cezar – dešifrovanje</td><td>P<sub>i</sub> = (C<sub>i</sub> + 26 − K<sub>E</sub>) mod 26</td></tr>
+  <tr><td>Vižner</td><td>C<sub>i</sub> = (P<sub>i</sub> + K<sub>i mod m</sub>) mod 26</td></tr>
+  <tr><td>Hil</td><td>C<sub>i</sub> = A·P<sub>i</sub> mod 26 · P<sub>i</sub> = A<sup>−1</sup>·C<sub>i</sub> mod 26 · ključeva 26<sup>n²</sup></td></tr>
+  <tr><td>OTP</td><td>C<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub> · P<sub>i</sub> = C<sub>i</sub> ⊕ K<sub>i</sub></td></tr>
+  <tr><td>Dvostruka transpozicija – broj šifrata</td><td>m! × n! (5!×3! = 720)</td></tr>
+  <tr><td>Permutacije slova alfabeta</td><td>26! &gt; 2<sup>88</sup></td></tr>
+  <tr><td>Primer 5! × 9!</td><td>&gt; 2<sup>25</sup></td></tr>
+  <tr><td>Primer 3! × 15!</td><td>&gt; 2<sup>42</sup> (≈ 10<sup>12</sup>)</td></tr>
+  <tr><td>Ključ 100 bita – prostor / u proseku</td><td>2<sup>100</sup> / 2<sup>99</sup></td></tr>
+  <tr><td>2<sup>30</sup> ključeva u sekundi → vreme</td><td>2<sup>69</sup> s ≈ 18,7 × 10<sup>12</sup> god.</td></tr>
+  <tr><td>Skraćeni napad 2<sup>60</sup></td><td>2<sup>30</sup> s ≈ 34 godine</td></tr>
+  <tr><td>Cezar – broj ključeva / u proseku</td><td>26 / 13</td></tr>
+  <tr><td>Indeks koincidencije – prosta zamena</td><td>≈ 0,065</td></tr>
+  <tr><td>Indeks koincidencije – slučajan tekst (1/26)</td><td>≈ 0,03846</td></tr>
+  <tr><td>Indeks koincidencije – Vižner dugog ključa</td><td>≈ 0,03846</td></tr>
+  <tr><td>Dužina ključa Vižnera</td><td>k ≈ 0,027·n / ((n−1)·I + 0,065 − 0,0385·n)</td></tr>
+  <tr><td>Homofona (primer)</td><td>00–31 (32 znaka), 32 − 26 = 6 slova sa dve šifre: A, E, N, O, R, T</td></tr>
+  <tr><td>Blok kod blokovskih šifara</td><td>64 (128 ili više) bita</td></tr>
+</table>
+
+<h3 id="recnik">Rečnik sinonima</h3>
+<table>
+  <tr><th>Termin</th><th>Znači isto</th></tr>
+  <tr><td>kriptovanje</td><td>šifrovanje, enkripcija, encryption</td></tr>
+  <tr><td>dekriptovanje</td><td>dešifrovanje, dekripcija, decryption</td></tr>
+  <tr><td>otvoreni tekst</td><td>nešifrovan podatak, plain text</td></tr>
+  <tr><td>šifrat</td><td>šifrovan / kriptovan podatak</td></tr>
+  <tr><td>šifra (ključ)</td><td>ključ, encryption key</td></tr>
+  <tr><td>algoritam</td><td>postupak, metod</td></tr>
+  <tr><td>prostor ključeva</td><td>key space</td></tr>
+  <tr><td>potpuna pretraga</td><td>brute force, isprobavanje svih ključeva</td></tr>
+  <tr><td>skraćeni napad</td><td>prečica, napad brži od potpune pretrage</td></tr>
+  <tr><td>transpozicija</td><td>premeštanje</td></tr>
+  <tr><td>supstitucija</td><td>zamena</td></tr>
+  <tr><td>monoalfabetska šifra</td><td>prosta zamena (jedan alfabet)</td></tr>
+  <tr><td>polialfabetska šifra</td><td>višestruka zamena (više alfabeta)</td></tr>
+  <tr><td>sekvencijalna šifra</td><td>protočna, streaming</td></tr>
+  <tr><td>Vernamova šifra</td><td>one-time pad (OTP)</td></tr>
+  <tr><td>Malori / Cica</td><td>napadač</td></tr>
+</table>
+
+<footer>Sadržaj je pravljen na osnovu prezentacija 01-02, 03-04 i 05-06. Ljubičasti okviri „Van slajdova" su dopune radi razumevanja.</footer>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ZIS – Test znanja</title>
+<script>
+(function(){var t;try{t=localStorage.getItem('zis-tema');}catch(e){}
+if(t!=='light'&&t!=='dark')t='dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --ink:#18212d; --muted:#5d6978; --line:#dfe4ea;
+    --accent:#1f5eff; --accent-ink:#fff; --accent-soft:#e8eeff;
+    --ok:#12805c; --ok-bg:#e4f6ee; --bad:#c0392b; --bad-bg:#fdeceb; --mid:#b9770e; --mid-bg:#fff3dc;
+    --code:#eef1f5;
+  }
+  @media all{
+    :root[data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#0e131a; --card:#171e28; --ink:#e7ecf3; --muted:#9aa6b6; --line:#28323f;
+      --accent:#7aa2ff; --accent-ink:#0b1220; --accent-soft:#1b2947;
+      --ok:#48d19b; --ok-bg:#12302a; --bad:#ff8a7d; --bad-bg:#3a1b19; --mid:#f2b24c; --mid-bg:#3a2d10;
+      --code:#202a37;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+  .bar{max-width:880px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .brand{font-weight:700;margin-right:auto}
+  .tab,.lnk{background:none;border:1px solid var(--line);color:var(--ink);padding:6px 14px;border-radius:99px;cursor:pointer;font:inherit;font-size:14px;text-decoration:none}
+  .tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  main{max-width:880px;margin:0 auto;padding:20px 16px 80px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+  h1{font-size:26px;margin:0 0 8px}
+  h2{font-size:20px;margin:0 0 10px}
+  h3{font-size:16px;margin:16px 0 6px}
+  .muted{color:var(--muted)}
+  .btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 20px;font:inherit;font-weight:600;cursor:pointer}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+  .btn.sm{padding:6px 12px;font-size:14px}
+  .btn:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}
+  .prog>i{display:block;height:100%;background:var(--accent);transition:width .25s}
+  .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .chip{display:inline-block;font-size:12.5px;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .chip.ok{background:var(--ok-bg);color:var(--ok)} .chip.bad{background:var(--bad-bg);color:var(--bad)} .chip.mid{background:var(--mid-bg);color:var(--mid)} .chip.none{background:var(--code);color:var(--muted)}
+  .q{font-size:18px;margin:12px 0 14px}
+  .q b,.q .mono,.mono{font-family:Consolas,"Cascadia Mono",monospace}
+  .q b.mono{font-weight:700}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+  .opt .k{flex:none;min-width:24px;height:24px;border-radius:6px;background:var(--code);display:grid;place-items:center;font-size:13px;font-weight:700}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .opt.right{border-color:var(--ok);background:var(--ok-bg)}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+  .opt:disabled{cursor:default}
+  input[type=text],textarea{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+  input[type=text]{font-family:Consolas,"Cascadia Mono",monospace;font-size:17px;letter-spacing:.04em}
+  textarea{min-height:90px;resize:vertical}
+  input:focus,textarea:focus,.opt:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:3px solid var(--accent-soft);border-color:var(--accent)}
+  .hint{font-size:13.5px;color:var(--muted);margin:6px 0 10px}
+  .fb{margin-top:16px;border-radius:12px;padding:12px 16px;border:1.5px solid}
+  .fb.ok{background:var(--ok-bg);border-color:var(--ok)} .fb.bad{background:var(--bad-bg);border-color:var(--bad)} .fb.mid{background:var(--mid-bg);border-color:var(--mid)}
+  .fb .t{font-weight:700;margin-bottom:4px}
+  .fb p{margin:6px 0}
+  .pts label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+  .pts input{margin-top:5px;width:18px;height:18px;flex:none}
+  table.t{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.t th,table.t td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+  table.t th{color:var(--muted);font-weight:600;font-size:13px}
+  table.g{border-collapse:collapse;margin:8px 0;font-family:Consolas,monospace;font-size:14px}
+  table.g td,table.g th{border:1px solid var(--line);padding:3px 8px;text-align:center}
+  table.g th{background:var(--accent-soft)}
+  .meter{width:100%;height:10px;background:var(--line);border-radius:99px;overflow:hidden;min-width:70px}
+  .meter>i{display:block;height:100%}
+  .big{font-size:44px;font-weight:800;line-height:1}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+  .stat{background:var(--code);border-radius:10px;padding:12px 14px}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:13px;color:var(--muted)}
+  .mx{display:inline-grid;grid-template-columns:repeat(2,auto);gap:2px 14px;padding:0 8px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:4px;vertical-align:middle;margin:0 4px;font-family:Consolas,monospace}
+  .mx.v{grid-template-columns:auto}
+  .mx i{font-style:normal;text-align:center}
+  a{color:var(--accent)}
+  dialog{border:0;border-radius:16px;padding:0;max-width:680px;width:calc(100% - 24px);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  dialog::backdrop{background:rgba(5,10,20,.6)}
+  .dlg{padding:22px 24px;max-height:86vh;overflow:auto}
+  .dlg .foot{position:sticky;bottom:-22px;background:var(--card);padding:14px 0 4px;margin-top:14px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .wr{border-left:4px solid var(--bad);background:var(--bad-bg);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:14.5px}
+  .rec{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:8px;padding:8px 12px;margin:8px 0}
+  .small{font-size:13.5px}
+  kbd{background:var(--code);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font-size:12.5px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <span class="brand">ZIS · Test znanja</span>
+  <button class="tab" id="tabTest">Test</button>
+  <button class="tab" id="tabStats">Statistika</button>
+  <a class="lnk" href="ZIS_Skripta_za_ucenje.html" target="_blank" rel="noopener">Skripta</a>
+  <button class="tab" id="themeBtn" type="button" aria-label="Promeni temu"></button>
+</div></header>
+<script>
+(function(){var r=document.documentElement,b=document.getElementById('themeBtn');
+function paint(){b.textContent=r.getAttribute('data-theme')==='dark'?'☀ Svetla':'🌙 Tamna';}
+b.onclick=function(){var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('zis-tema',t);}catch(e){}paint();};
+paint();})();
+</script>
+<main id="app"></main>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+'use strict';
+/* =====================================================================
+   OSNOVE
+   ===================================================================== */
+const LS_KEY='zis-test-znanja-v1';
+const SCRIPT='ZIS_Skripta_za_ucenje.html';
+const ROUND_SIZE=10;
+const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const $=(s,r=document)=>r.querySelector(s);
+const mod=(a,n)=>((a%n)+n)%n;
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[rnd(0,a.length-1)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stripTags=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,'^$1').replace(/<sub>(.*?)<\/sub>/g,'_$1').replace(/<[^>]+>/g,'').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&');
+const strip=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/gi,'d');
+const normText=s=>strip(s).toUpperCase().replace(/[^A-Z0-9]/g,'');
+const parseNum=(raw,int)=>{let s=String(raw).trim().replace(/\s+/g,'');if(int)s=s.replace(/[.,]/g,'');else s=s.replace(',','.');if(s==='')return NaN;return Number(s);};
+const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const dec=x=>String(Math.round(x*10)/10).replace('.',',');
+const sup=(b,e)=>`${b}<sup>${e}</sup>`;
+const anchor=id=>`${SCRIPT}#t${id.replace('.','-')}`;
+
+/* =====================================================================
+   TEME (iste oznake odeljaka kao u skripti)
+   ===================================================================== */
+const LESSONS={1:'Lekcija 1 · Uvod',2:'Lekcija 2 · Sigurnost kriptosistema',3:'Lekcija 3 · Klasične šifre'};
+const TOPICS=[
+ ['1.1','Pojmovi kriptologije'],['1.2','Istorijat kriptologije'],['1.3','Značaj kriptologije'],['1.4','Osnovna terminologija'],['1.5','Komunikacioni kanal'],
+ ['2.1','Algoritam i ključevi (simetrični / asimetrični)'],['2.2','Kerkhofov princip'],['2.3','Potpuna pretraga i prostor ključeva'],['2.4','Sigurnost kriptosistema i skraćeni napad'],
+ ['2.5','Podela klasičnih šifara'],['2.6','Šifre transpozicije'],['2.7','Kriptoanaliza transpozicije'],['2.8','Šifre supstitucije i Cezarova šifra'],['2.9','Kriptoanaliza Cezara i statistika jezika'],
+ ['3.1','Modularna aritmetika'],['3.2','Homofona šifra'],['3.3','Hilova šifra'],['3.4','Vižnerova šifra'],['3.5','Kriptoanaliza Vižnera i indeks koincidencije'],['3.6','One-time pad'],['3.7','Kodne knjige'],['3.8','Blokovske i protočne šifre']
+].map(([id,name])=>({id,name,lesson:+id[0]}));
+const TOPIC=Object.fromEntries(TOPICS.map(t=>[t.id,t]));
+const tname=id=>`${id} ${TOPIC[id].name}`;
+
+/* =====================================================================
+   KRIPTO POMOĆNE FUNKCIJE (koriste ih generatori i samoprovera)
+   ===================================================================== */
+const caesar=(s,k)=>[...s].map(c=>A[mod(A.indexOf(c)+k,26)]).join('');
+const vig=(s,key,dir=1)=>[...s].map((c,i)=>A[mod(A.indexOf(c)+dir*A.indexOf(key[i%key.length]),26)]).join('');
+const atbash=s=>[...s].map(c=>A[25-A.indexOf(c)]).join('');
+function colTransp(text,cols,order){ // upis po redovima, čitanje kolona po zadatom redosledu (indeksi kolona)
+  const rows=Math.ceil(text.length/cols);let out='';
+  const ord=order||[...Array(cols).keys()];
+  for(const c of ord)for(let r=0;r<rows;r++){const i=r*cols+c;if(i<text.length)out+=text[i];}
+  return out;
+}
+function keyOrder(key){ // redosled čitanja kolona prema alfabetskom rangu slova ključa
+  return [...key].map((ch,i)=>({ch,i})).sort((a,b)=>a.ch<b.ch?-1:a.ch>b.ch?1:a.i-b.i).map(o=>o.i);
+}
+function doubleTransp(text,rows,cols,rowPerm,colPerm){
+  const m=[];for(let r=0;r<rows;r++)m.push([...text.slice(r*cols,r*cols+cols)]);
+  let out='';for(const r of rowPerm)for(const c of colPerm)out+=m[r][c];return out;
+}
+const inv26=a=>{for(let x=1;x<26;x++)if(mod(a*x,26)===1)return x;return null;};
+const det2=M=>mod(M[0][0]*M[1][1]-M[0][1]*M[1][0],26);
+const hillInv=M=>{const di=inv26(det2(M));return [[mod(di*M[1][1],26),mod(-di*M[0][1],26)],[mod(-di*M[1][0],26),mod(di*M[0][0],26)]];};
+const mulMV=(M,v)=>[mod(M[0][0]*v[0]+M[0][1]*v[1],26),mod(M[1][0]*v[0]+M[1][1]*v[1],26)];
+const hillText=(s,M)=>{let o='';for(let i=0;i<s.length;i+=2){const c=mulMV(M,[A.indexOf(s[i]),A.indexOf(s[i+1])]);o+=A[c[0]]+A[c[1]];}return o;};
+const mx=M=>`<span class="mx">${M.flat().map(v=>`<i>${v}</i>`).join('')}</span>`;
+const vx=v=>`<span class="mx v">${v.map(x=>`<i>${x}</i>`).join('')}</span>`;
+const HOMO={A:['01','07'],B:['14'],C:['21'],D:['04'],E:['13','17'],F:['20'],G:['29'],H:['31'],I:['06'],J:['28'],K:['12'],L:['30'],M:['27'],N:['00','18'],O:['26','19'],P:['09'],Q:['10'],R:['25','23'],S:['02'],T:['08','24'],U:['22'],V:['05'],W:['16'],X:['15'],Y:['11'],Z:['03']};
+const HOMO_REV={};for(const [l,cs] of Object.entries(HOMO))for(const c of cs)HOMO_REV[c]=l;
+const homoTable=()=>{const row=(a,b)=>`<tr>${[...A.slice(a,b)].map(l=>`<th>${l}</th>`).join('')}</tr><tr>${[...A.slice(a,b)].map(l=>`<td>${HOMO[l].join('/')}</td>`).join('')}</tr>`;return `<table class="g">${row(0,13)}${row(13,26)}</table>`;};
+const OTPA=['E','H','I','K','L','R','S','T'];
+const bin3=l=>OTPA.indexOf(l).toString(2).padStart(3,'0');
+const otpTable=()=>`<table class="g"><tr>${OTPA.map(l=>`<th>${l}</th>`).join('')}</tr><tr>${OTPA.map(l=>`<td>${bin3(l)}</td>`).join('')}</tr></table>`;
+const xorStr=(a,b)=>[...a].map((x,i)=>x===b[i]?'0':'1').join('');
+const WORDS=['ATTACK','DEFEND','SECRET','CIPHER','MESSAGE','NETWORK','SYSTEM','PRIVATE','PUBLIC','SECURITY','ENCRYPT','MODULAR','HISTORY','TRANSFER','PROTECT','DOCUMENT','PASSWORD','ANALYSIS','KEYSPACE','PLAINTEXT'];
+const PHRASES=['OCEKUJEMMIHOLJSKOLETO','ATTACKATDAWNTOMORROW','ZASTITAINFORMACIONIHSISTEMA','KRIPTOGRAFIJAJENAUKA','KLJUCJETAJNIPODATAK','SIFRATJENECITLJIVTEKST'];
+function steps(word,k,dir){ // prikaz prvih nekoliko slova Cezar računa
+  const out=[...word].slice(0,5).map(c=>{const n=A.indexOf(c);const v=dir>0?mod(n+k,26):mod(n+26-k,26);
+    return dir>0?`${c}=${n} → (${n} + ${k}) mod 26 = ${v} → <b>${A[v]}</b>`:`${c}=${n} → (${n} + 26 − ${k}) mod 26 = ${v} → <b>${A[v]}</b>`;});
+  return out.join('<br>')+(word.length>5?'<br>…':'');
+}
+
+/* =====================================================================
+   BANKA STATIČKIH PITANJA
+   mc(...)    : tačan odgovor je uvek prvi navedeni; opcije se mešaju pri prikazu
+   ===================================================================== */
+const BANK=[];const _cnt={};
+function reg(q){_cnt[q.topic]=(_cnt[q.topic]||0)+1;q.id=q.topic+'#'+_cnt[q.topic];BANK.push(q);return q;}
+const mc=(topic,q,right,wrongs,expl)=>reg({type:'mc',topic,q,o:[right,...wrongs],expl});
+const tf=(topic,q,truth,expl)=>reg({type:'tf',topic,q,truth,expl});
+const multi=(topic,q,rights,wrongs,expl)=>reg({type:'multi',topic,q,rights,wrongs,expl});
+const inp=(topic,q,answers,expl,hint)=>reg({type:'in',topic,q,answers,expl,hint});
+const open=(topic,q,points,expl)=>reg({type:'open',topic,q,points,expl});
+
+/* ---------- 1.1 Pojmovi kriptologije ---------- */
+mc('1.1','Nauka koja proučava metode zaštite – skrivanja informacija, podataka i poruka – naziva se:','kriptologija',['kriptografija','kriptoanaliza','steganografija'],'Kriptologija je krovna nauka; obuhvata kriptografiju (pravljenje zaštite) i kriptoanalizu (razbijanje zaštite).');
+mc('1.1','Postupci kojima se informacija sakriva tako da bude čitljiva samo onima kojima je namenjena su:','kriptografija',['kriptoanaliza','heš funkcija','autentifikacija'],'Kriptografija = postupci sakrivanja poruke (enkripcija, kriptovanje).');
+mc('1.1','Tehnike „probijanja" zaštite i otkrivanja zaštićenih sadržaja od strane napadača čine:','kriptoanalizu',['kriptografiju','kriptologiju','steganografiju'],'Kriptoanaliza je strana napada: razbijanje zaštite i otkrivanje sadržaja onima kojima nije namenjen.');
+mc('1.1','Grčka reč ΚΡΥΠΤΟΣ (κρυπτός) znači:','sakriven',['pisanje','nauka','ključ'],'kripto = sakriven. Dalje: logija (nauka), grafija (pisanje), analiza.');
+mc('1.1','Reč kriptografija nastala je od:','kripto + grafija',['kripto + logija','kripto + analiza','kripto + algoritam'],'kripto + grafija; logija daje kriptologiju, analiza kriptoanalizu.');
+tf('1.1','Kriptoanaliza je deo odbrane i služi da se podaci zaštite od napadača.',false,'Kriptoanaliza je razbijanje zaštite (strana napadača). Zaštitom se bavi kriptografija.');
+tf('1.1','Kriptologija obuhvata i kriptografiju i kriptoanalizu.',true,'Kriptologija je nauka o zaštiti informacija u celini – i pravljenje i razbijanje zaštite.');
+mc('1.1','Napadač pokušava da bez ključa pročita šifrovanu poruku. Čime se bavi?','kriptoanalizom',['kriptografijom','enkripcijom','steganografijom'],'Razbijanje zaštite = kriptoanaliza.');
+open('1.1','Šta je kriptologija?',['nauka koja proučava metode zaštite / skrivanja informacija, podataka, poruka','obuhvata kriptografiju i kriptoanalizu','kripto (sakriven) + logija']);
+open('1.1','Šta je kriptografija?',['postupci za sakrivanje informacija (poruka)','poruka je čitljiva samo onima kojima je namenjena','enkripcija / kriptovanje (kripto + grafija)']);
+open('1.1','Šta je kriptoanaliza?',['tehnike „probijanja" (razbijanja) zaštite','otkrivanje zaštićenih sadržaja','od strane napadača, tj. onih kojima poruka nije namenjena']);
+
+/* ---------- 1.2 Istorijat ---------- */
+mc('1.2','Potreba za zaštitom podataka pojavila se:','kada se pojavila pisana reč (pismo)',['pojavom računara','pojavom interneta','u 20. veku, u ratovima']);
+mc('1.2','Prelomna tačka između manuelnog i automatskog šifrovanja je:','pojava računara',['pojava pisma','Cezarova šifra','pojava interneta'],'Pre računara – manuelno (ručno), posle – automatsko.');
+mc('1.2','Skitali (σκυτάλη) je:','traka omotana oko štapa',['obrnuti alfabet','pismo sa čvorovima','rečnik reči i kodova'],'Skitali je šifra transpozicije – poruka se piše po traci namotanoj na štap.');
+mc('1.2','Atbaš je:','biblijska šifra obrnutog alfabeta (A↔Z, B↔Y …)',['traka oko štapa','pomeraj za 3 mesta','pismo sa čvorovima']);
+mc('1.2','Quipu je:','pismo sa čvorovima',['traka oko štapa','obrnuti alfabet','tabela sa 26 alfabeta']);
+mc('1.2','Koji sistem NIJE među najstarijim opisanim sistemima sa slajda?','Vižnerova šifra',['skitali','Atbaš','Cezarova šifra'],'Vižnerova šifra je kasnije (polialfabetska) i obrađuje se u lekciji 3.');
+tf('1.2','Skitali je primer šifre supstitucije.',false,'Skitali premešta slova – to je transpozicija.');
+tf('1.2','U Atbašu se slovo C zamenjuje slovom X.',true,'A↔Z, B↔Y, C↔X, D↔W …');
+mc('1.2','Šifrovanje pre pojave računara bilo je:','manuelno (ručno)',['automatsko','digitalno','kvantno']);
+multi('1.2','Označi sve što spada u najstarije opisane sisteme (sa slajda):',['skitali','Atbaš','Cezarova šifra','quipu'],['Hilova šifra','Vižnerova šifra','One-time pad'],'Hil, Vižner i OTP su klasične šifre iz lekcije 3, ne „najstariji" sistemi sa slajda 4.');
+
+/* ---------- 1.3 Značaj ---------- */
+multi('1.3','Koja tri cilja čine bezbednost podataka (informacija)?',['poverljivost','integritet','raspoloživost'],['brzina prenosa','skalabilnost','kompresija'],'Poverljivost (confidentiality), integritet (integrity), raspoloživost (availability).');
+mc('1.3','Poverljivost (confidentiality) znači:','podatak mogu da pročitaju samo ovlašćeni',['podatak nije izmenjen','podatak je dostupan kad je potreban','podatak je kompresovan']);
+mc('1.3','Integritet znači:','podatak nije neovlašćeno izmenjen',['podatak može pročitati samo ovlašćeni','podatak je uvek dostupan','podatak je šifrovan']);
+mc('1.3','Raspoloživost (availability) znači:','podatak je dostupan kada je potreban',['podatak je neizmenjen','podatak je tajan','podatak je digitalno potpisan']);
+mc('1.3','Primer zaštite prenosa podataka koji se pominje na slajdu je:','https',['http','ftp','telnet']);
+mc('1.3','Za proveru identiteta (autentikaciju) koriste se:','digitalni sertifikati i ključevi',['heš funkcije','skitale','kodne knjige']);
+mc('1.3','Provera da li je podatak neizmenjen tokom prenosa vrši se pomoću:','heš funkcije',['digitalnih sertifikata','Cezarove šifre','https-a']);
+tf('1.3','Heš funkcija se koristi da se poruka šifruje kako bi bila nečitljiva.',false,'Heš funkcija služi za proveru prenosa podataka (da li je došlo do promene).');
+mc('1.3','Napadač je u prenosu izmenio iznos u poruci. Koji cilj bezbednosti je narušen?','integritet',['poverljivost','raspoloživost','steganografija']);
+mc('1.3','Napadač je pročitao poverljivu poruku. Koji cilj je narušen?','poverljivost',['integritet','raspoloživost','autentikacija']);
+open('1.3','Značaj šifrovanja?',['bezbednost podataka: poverljivost, integritet, raspoloživost','zaštita prenosa podataka – https','provera identiteta (autentikacija) – digitalni sertifikati, ključevi','provera prenosa podataka – heš funkcija']);
+
+/* ---------- 1.4 Terminologija ---------- */
+mc('1.4','Kriptovanje je isto što i:','šifrovanje / enkripcija (encryption)',['dešifrovanje','heširanje','steganografija']);
+mc('1.4','Otvoreni tekst na engleskom je:','plain text',['cipher text','encryption key','hash']);
+mc('1.4','Šifrat je:','šifrovan (kriptovan) podatak',['nešifrovan podatak','ključ','algoritam']);
+mc('1.4','Na slajdu je „šifra" kao sinonim navedena za:','ključ (encryption key)',['šifrat','otvoreni tekst','algoritam'],'Slajd 6: šifra = ključ = encryption key.');
+mc('1.4','Algoritam je sinonim za:','postupak / metod',['ključ','šifrat','otvoreni tekst']);
+mc('1.4','Steganografija je:','skrivanje poruke tako da napadač nije svestan komunikacije',['šifrovanje poruke ključem','razbijanje šifre','provera identiteta']);
+tf('1.4','Kod steganografije napadač vidi šifrat, ali ga ne može pročitati.',false,'Kod steganografije napadač uopšte ne zna da komunikacija postoji (npr. tekst sakriven u slici).');
+mc('1.4','Dekripcija znači:','dešifrovanje',['šifrovanje','heširanje','kompresija']);
+mc('1.4','Prikrivanje teksta u slici je primer:','steganografije',['transpozicije','kodne knjige','asimetričnog šifrovanja']);
+open('1.4','Šta je šifrovanje / dešifrovanje?',['šifrovanje: otvoreni tekst → šifrat (algoritam + ključ)','dešifrovanje: šifrat → otvoreni tekst (odgovarajući ključ)','sinonimi: kriptovanje/enkripcija, dekriptovanje/dekripcija']);
+open('1.4','Šta je otvoreni tekst?',['nešifrovan podatak','plain text – poruka u izvornom obliku, pre šifrovanja']);
+open('1.4','Šta je šifrat?',['šifrovan (kriptovan) podatak','rezultat šifrovanja otvorenog teksta']);
+open('1.4','Šta je steganografija?',['skrivanje poruke','napadač nije svestan komunikacije','npr. prikrivanje teksta u slici']);
+open('1.2','Koja je prelomna tačka između manuelnog i automatskog šifrovanja?',['pojava računara','pre računara – manuelno (ručno) šifrovanje','posle računara – automatsko šifrovanje']);
+
+/* ---------- 1.5 Komunikacioni kanal ---------- */
+mc('1.5','Ko je Malori (Cica) u komunikacionom kanalu?','napadač',['pošiljalac','primalac','poverljiva treća strana']);
+mc('1.5','Ko je Bob?','primalac',['pošiljalac','napadač','administrator']);
+mc('1.5','Ko je Alisa?','pošiljalac',['primalac','napadač','ključ']);
+mc('1.5','Idealan komunikacioni kanal imamo kada napadač:','ne može da pročita poruke između A i B, niti da ih promeni',['može da pročita, ali ne i da promeni poruke','može da promeni, ali ne i da pročita poruke','ne zna ko komunicira']);
+tf('1.5','U idealnom kanalu napadač može da pročita poruke, ali ne može da ih promeni.',false,'Idealan kanal: ne može ni da pročita ni da promeni.');
+mc('1.5','Napadač može da čita poruke između Alise i Boba, ali ne i da ih menja. Da li je kanal idealan?','ne – idealan zahteva da ne može ni da čita',['da','da, ako je poruka kratka','zavisi od dužine ključa']);
+open('1.5','Opiši idealni komunikacioni kanal.',['pošiljalac Alisa, primalac Bob, napadač Malori (Cica)','napadač ne može da pročita poruke između A i B','napadač ne može da ih promeni']);
+
+/* ---------- 2.1 Algoritam i ključevi ---------- */
+mc('2.1','Kod simetričnog sistema:','isti (identičan) ključ se koristi za šifrovanje i dešifrovanje',['javni ključ šifruje, privatni dešifruje','ključ nije potreban','ključ za šifrovanje je javan, a za dešifrovanje uvek isti javni']);
+mc('2.1','Koliko ključeva koristi simetrični metod?','jedan (zajednički tajni)',['dva (par)','tri','nijedan']);
+mc('2.1','Koliko ključeva koristi asimetrični metod?','dva (javni i privatni)',['jedan','tri','nijedan']);
+mc('2.1','Kod asimetričnog sistema, za šifrovanje se koristi:','javni ključ',['privatni ključ','identičan ključ za obe strane','ključ se ne koristi']);
+mc('2.1','Kod asimetričnog sistema, za dešifrovanje se koristi:','privatni (tajni) ključ',['javni ključ','isti ključ kao za šifrovanje','kodna knjiga']);
+tf('2.1','Privatni ključ asimetričnog sistema sme da bude javno objavljen.',false,'Javan je samo javni ključ; privatni mora ostati tajan.');
+tf('2.1','Kod simetričnog sistema ključevi za šifrovanje i dešifrovanje su identični.',true);
+mc('2.1','Za šifrovanje su potrebni:','algoritam i ključevi',['samo algoritam','samo ključ','samo otvoreni tekst']);
+mc('2.1','Alisa šalje poruku Bobu asimetričnim sistemom. Čime Bob dešifruje poruku?','svojim privatnim ključem',['svojim javnim ključem','Alisinim privatnim ključem','nema potrebe za ključem'],'Šifruje se Bobovim javnim ključem, dešifruje Bobovim privatnim.');
+open('2.1','Koja je razlika između simetričnog i asimetričnog metoda šifrovanja?',['simetrični: ključevi za šifrovanje i dešifrovanje su identični','asimetrični: javni ključ za šifrovanje','asimetrični: privatni (tajni) ključ za dešifrovanje']);
+open('2.1','Koliko ključeva se koristi za asimetričan metod, a koliko za simetričan?',['simetrični: jedan ključ (isti za obe operacije)','asimetrični: dva ključa (javni i privatni – par)']);
+
+/* ---------- 2.2 Kerkhofov princip ---------- */
+mc('2.2','Kerkhofov princip kaže da sistem treba da bude siguran:','čak i kada je sve osim ključa poznato',['samo ako je algoritam tajan','samo ako je šifrat tajan','samo ako je ključ kratak']);
+tf('2.2','Po Kerkhofovom principu sigurnost sistema zavisi od tajnosti algoritma.',false,'Sigurnost mora počivati samo na ključu; algoritam napadač može da zna.');
+mc('2.2','Šta napadač mora da otkrije kriptoanalizom?','ključ',['algoritam','šifrat','otvoreni tekst algoritma']);
+mc('2.2','Zašto je teško očuvati tajnost algoritma?','naročito u doba računara i interneta',['jer su algoritmi uvek patentirani','jer su prekratki','jer ih šifruje svako']);
+multi('2.2','Koji su praktični zahtevi iz Kerkhofovog principa?',['ključ se distribuira i pamti bez pismenih beleški','ključ se lako menja po potrebi','sistem je jednostavan za korišćenje','sistem je lako prenosiv'],['algoritam mora ostati tajan','upotreba sme da zavisi od nekoliko ljudi','sistem mora biti što složeniji za korišćenje']);
+tf('2.2','Napadač može da zna algoritam, a sistem i dalje može biti siguran.',true,'To je sama suština Kerkhofovog principa.');
+mc('2.2','Šta napadač zna u modelu Kerkhofovog principa?','šifrat i (moguće) algoritam, ali ne i ključ',['samo šifrat','ključ i algoritam','samo otvoreni tekst']);
+tf('2.2','Upotreba kriptološkog sistema sme da zavisi od nekoliko ljudi.',false,'Ne sme – sistem mora biti jednostavan i ne sme zavisiti od nekoliko ljudi.');
+open('2.2','Navedi i objasni Kerkhofov princip za siguran kriptosistem.',['sistem treba da je siguran čak i kada je sve osim ključa poznato','napadač zna šifrat, može da zna algoritam; ključ mora da otkrije kriptoanalizom','tajnost algoritma je teško očuvati (računari, internet)','praktično: lako distribuiranje/pamćenje i promena ključa, jednostavno korišćenje, lako prenosiv']);
+
+/* ---------- 2.3 Potpuna pretraga i prostor ključeva ---------- */
+mc('2.3','Potpuna pretraga ključeva znači da napadač:','proba sve moguće ključeve i proverava rezultate dešifrovanja',['pogađa samo najverovatnije ključeve','koristi statistiku jezika','pita primaoca za ključ']);
+mc('2.3','Prostor ključeva (key space) je:','skup svih mogućih ključeva',['dužina jednog ključa','broj slova u šifratu','memorija za čuvanje ključeva']);
+tf('2.3','Što je prostor ključeva veći, potpuna pretraga traje duže.',true);
+mc('2.3','Koliko ključeva se u proseku mora isprobati kod potpune pretrage?','polovina prostora ključeva',['ceo prostor ključeva','kvadratni koren prostora','samo jedan']);
+mc('2.3','Za Cezarovu šifru, u proseku se mora probati:','13 ključeva',['26 ključeva','3 ključa','52 ključa'],'Prostor ima 26 ključeva, u proseku je polovina = 13.');
+mc('2.3','Šta napadač proverava nakon svakog pokušaja potpune pretrage?','da li je dešifrovani rezultat smislen',['da li je ključ kratak','dužinu šifrata','da li je ključ javni']);
+mc('2.3','Zašto prostor ključeva treba da bude što veći?','da napadač ne može da ih isproba u razumnom vremenu',['da ključ bude lakši za pamćenje','da šifrat bude kraći','da algoritam bude tajan']);
+
+/* ---------- 2.4 Sigurnost i skraćeni napad ---------- */
+mc('2.4','Siguran kriptosistem je onaj kod koga je:','najbolji napad samo potpuna pretraga ključeva',['algoritam tajan','ključ kraći od 64 bita','postoji skraćeni napad']);
+mc('2.4','Nesiguran kriptosistem je onaj kod koga:','postoji „prečica" – skraćeni napad',['je ključ dug','je algoritam javan','napadač zna šifrat']);
+tf('2.4','Kod sigurnog kriptosistema stepen sigurnosti zavisi samo od dužine (i kompleksnosti) ključa.',true);
+tf('2.4','Sigurnost kriptosistema može se egzaktno odrediti.',false,'Zasniva se na određenim pretpostavkama i nije egzaktno odrediva.');
+mc('2.4','Ciljevi kriptoanalize su otkrivanje:','otvorenog teksta ili ključa',['samo algoritma','samo šifrata','samo dužine ključa']);
+mc('2.4','Prihvatljivo je za napadača i otkrivanje:','loših ključeva',['svih pravih ključeva odjednom','algoritma','privatnog ključa primaoca']);
+mc('2.4','Ključ je dužine 100 bita. Veličina prostora ključeva je:',sup(2,100),[sup(2,50),sup(100,2),sup(2,10)]);
+mc('2.4','Ključ 100 bita, 2<sup>30</sup> ključeva u sekundi. Približno vreme potpune pretrage (u proseku) je:','18,7 × 10<sup>12</sup> godina',['34 godine','18,7 × 10<sup>6</sup> godina','2<sup>30</sup> sekundi'],'2<sup>99</sup>/2<sup>30</sup> = 2<sup>69</sup> s ≈ 18,7 × 10<sup>12</sup> godina.');
+mc('2.4','Ako skraćeni napad traži samo 2<sup>60</sup> ključeva, a testira se 2<sup>30</sup>/s, vreme je približno:','34 godine',['18,7 × 10<sup>12</sup> godina','2<sup>60</sup> godina','1 sekunda'],'2<sup>60</sup>/2<sup>30</sup> = 2<sup>30</sup> s ≈ 34 godine.');
+mc('2.4','Sistem ima ključ od 128 bita, ali postoji napad koji zahteva samo 2<sup>50</sup> operacija. Takav sistem je:','nesiguran (postoji skraćeni napad)',['siguran, jer je ključ dug','siguran, jer je algoritam javan','siguran po Kerkhofovom principu']);
+tf('2.4','Ako za sistem postoji skraćeni napad, sistem se smatra nesigurnim.',true);
+mc('2.4','Zašto je kriptologija „privlačna mnogima"?','jer se sigurnost zasniva na pretpostavkama i nije egzaktno odrediva',['jer je jednostavna','jer su svi algoritmi tajni','jer ne zahteva matematiku']);
+inp('2.4','Ključ je dužine 100 bita. U proseku se testira 2<sup>x</sup> ključeva. Koliko je x?',['99'],'Prostor je 2<sup>100</sup>, u proseku polovina: 2<sup>100</sup>/2 = 2<sup>99</sup>.','Upiši broj.');
+inp('2.4','Pri testiranju 2<sup>30</sup> ključeva u sekundi, pretraga 2<sup>99</sup> ključeva traje 2<sup>x</sup> sekundi. Koliko je x?',['69'],'2<sup>99</sup>/2<sup>30</sup> = 2<sup>69</sup>.','Upiši broj.');
+open('2.4','Šta se podrazumeva pod izrazom skraćeni napad na šifarski sistem?',['napad efikasniji od potpune pretrage ključeva („prečica")','npr. dovoljno je proveriti 2^60 umesto 2^100 ključeva, ili se koristi statistika','postojanje takvog napada znači da je sistem nesiguran']);
+open('2.4','Koja je razlika između sigurnog i nesigurnog kriptosistema?',['siguran: najbolji napad je samo potpuna pretraga ključeva','kod sigurnog sigurnost zavisi samo od dužine (i kompleksnosti) ključa','nesiguran: postoji prečica – skraćeni napad']);
+open('2.4','Kako dužina ključa utiče na sigurnost kriptosistema?',['duži ključ → veći prostor ključeva','potpuna pretraga traje duže','kod sigurnog sistema sigurnost zavisi samo od dužine i kompleksnosti ključa','primer: 100 bita → 2^100 ključeva ≈ 18,7 × 10^12 godina pri 2^30 ključeva/s']);
+open('2.3','Šta znači potpuna pretraga u slučaju šifrovanja?',['napadač proba sve moguće ključeve','proverava rezultat dešifrovanja (da li je smislen)']);
+open('2.3','Šta je prostor ključeva (key space)?',['skup svih mogućih ključeva','što je veći, potpuna pretraga duže traje (veća sigurnost)']);
+
+/* ---------- 2.5 Podela ---------- */
+mc('2.5','Prema podeli sa slajdova, klasični šifarski sistemi su:','transpozicije, supstitucije, one-time pad i kodne knjige',['samo transpozicije i supstitucije','simetrični i asimetrični','blokovski i protočni']);
+mc('2.5','Dvostruko premeštanje (kolona i redova) spada u:','šifre transpozicije',['šifre supstitucije','one-time pad','kodne knjige']);
+mc('2.5','Monoalfabetske šifre (prosta zamena) spadaju u:','šifre supstitucije',['šifre transpozicije','one-time pad','kodne knjige']);
+mc('2.5','Poligrami i polialfabetske zamene su podgrupe:','šifara supstitucije',['šifara transpozicije','kodnih knjiga','asimetrične kriptografije']);
+multi('2.5','Koje su šifre transpozicije?',['skitala','transpozicija kolona','dvostruka transpozicija'],['Cezarova šifra','Vižnerova šifra','Hilova šifra']);
+multi('2.5','Koje su šifre supstitucije?',['Cezarova šifra','Vižnerova šifra','Hilova šifra','homofona šifra'],['skitala','dvostruka transpozicija','transpozicija kolona sa ključem']);
+mc('2.5','Transpozicija u odnosu na supstituciju:','premešta slova, a supstitucija ih zamenjuje drugim slovima/simbolima',['zamenjuje slova, a supstitucija ih premešta','obe samo premeštaju slova','obe samo menjaju slova']);
+mc('2.5','Atbaš je prema podeli:','šifra proste zamene (supstitucije)',['šifra transpozicije','one-time pad','kodna knjiga']);
+open('2.6','Kako biste opisali šifre transpozicije?',['slova se ne menjaju, već im se premešta redosled (permutacija)','učestanost slova ostaje ista','primeri: skitala, transpozicija kolona (sa ključem), dvostruka transpozicija']);
+open('2.8','Kako biste opisali šifre supstitucije?',['svako slovo se menja drugim slovom ili simbolom','ključ je pravilo zamene (26! mogućih ključeva)','najjednostavnija: monoalfabetska prosta zamena (Cezar); dalje poligramske i polialfabetske']);
+
+/* ---------- 2.6 Transpozicije ---------- */
+mc('2.6','Šta je ključ kod šifre „skitali"?','obim štapa (broj redova u koloni)',['broj kolona matrice','permutacija slova alfabeta','pomeraj']);
+mc('2.6','Šta je ključ kod transpozicije kolona (bez ključne reči)?','broj kolona matrice',['pomeraj slova','ključna reč','broj redova određen ključem']);
+mc('2.6','Kod transpozicije kolona sa ključem KOSA, kolone se numerišu prema redosledu slova ključa u alfabetu. Brojevi za K, O, S, A su:','2, 3, 4, 1',['1, 2, 3, 4','4, 3, 2, 1','3, 2, 1, 4']);
+mc('2.6','Šta određuje broj kolona u transpoziciji sa ključem?','dužina ključne reči',['dužina otvorenog teksta','slovo ključa A','broj slova alfabeta']);
+mc('2.6','Šta je ključ dvostruke transpozicije?','veličina matrice i permutacije kolona i redova',['samo pomeraj','samo broj kolona','kodna knjiga']);
+inp('2.6','Koliko je mogućih šifrata dvostruke transpozicije za matricu [5×3] (5! × 3!)?',['720'],'5! = 120, 3! = 6 → 120 × 6 = 720.','Upiši broj.');
+tf('2.6','Kod transpozicije kolona tekst se upisuje po kolonama, a šifrat se čita po redovima.',false,'Obrnuto: tekst se upisuje po redovima, šifrat se čita po kolonama.');
+tf('2.6','Dvostruka transpozicija menja slova otvorenog teksta.',false,'Samo premešta kolone i redove; slova ostaju ista.');
+inp('2.6','Skitala, obim 4 (4 reda u koloni), otvoreni tekst „Ocekujem miholjsko leto". Koja je prva grupa (prva kolona) šifrata?',['OELE'],'Tekst se upiše u 4 reda po 6 slova: OCEKUJ / EMMIHO / LJSKOL / ETO. Prva kolona (odozgo nadole): O, E, L, E → OELE. Zatim CMJT, EMSO, KIK, UHO, JOL.','Upiši 4 slova.');
+mc('2.6','Šifrat transpozicije kolona sa matricom [3×7] za OCEKUJEM MIHOLJSKO LETO je:','OMSCMKEIOKHLUOEJLTEJO',['OCEKUJEMMIHOLJSKOLETO','OELECMJTEMSOKIKUHOJOL','KMOKTOUMLOOCJIJLEEHSE'],'Tekst se upiše po redovima (3 reda × 7 kolona), pa se čitaju kolone: OMS·CMK·EIO·KHL·UOE·JLT·EJO.');
+mc('2.6','Šifrat za ključ KOSA (matrica [6×4]) i tekst OCEKUJEM MIHOLJSKO LETO je:','KMOKTOUMLOOCJIJLEEHSE',['OMSCMKEIOKHLUOEJLTEJO','OUMLOOCJIJLEEHSEKMOKT','EEHSECJIJLOUMLOOKMOKT'],'Kolone se čitaju redom 1 (A), 2 (K), 3 (O), 4 (S): KMOKT · OUMLOO · CJIJL · EEHSE.');
+mc('2.6','Dvostruka transpozicija: šta se radi?','zamena mesta kolonama, potom redovima',['zamena slova pomerajem','množenje matricom','XOR sa ključem']);
+mc('2.6','U primeru dvostruke transpozicije ATTACK AT DAWN šifrat je:','XTAWXNATTXADAKC',['ATTACKATDAWN','ATTACKXATXDAWNX','XTAWXNATTXADAKA']);
+
+/* ---------- 2.7 Kriptoanaliza transpozicije ---------- */
+mc('2.7','Moguće dimenzije matrice za šifrat od 45 slova su:','3×15, 15×3, 5×9 i 9×5',['3×15 i 15×3 samo','4×11 i 11×4','6×8 i 8×6'],'Dimenzije su delioci broja 45: 3·15 = 5·9 = 45.');
+mc('2.7','Šta napadač prvo pokušava da pogodi kod dvostruke transpozicije u primeru sa slajda?','permutaciju kolona – traži smislenu reč u početnom redu',['pomeraj','dužinu ključne reči','XOR ključ']);
+mc('2.7','5! × 9! je:','veće od 2<sup>25</sup>',['manje od 2<sup>20</sup>','veće od 2<sup>42</sup>','jednako 720']);
+mc('2.7','3! × 15! je:','veće od 2<sup>42</sup> (≈ 10<sup>12</sup>)',['manje od 2<sup>25</sup>','jednako 720','tačno 2<sup>26</sup>']);
+mc('2.7','Učestanost slova u šifratu je ista kao u otvorenom tekstu jezika. To ukazuje na:','transpoziciju (slova nisu zamenjena)',['supstituciju','one-time pad','Vižnerovu šifru']);
+tf('2.7','Za dvostruku transpoziciju napadač mora da proba sve kombinacije redova i kolona zajedno – skraćeni napad ne postoji.',false,'Postoji: kolone se pogađaju zasebno (smislene reči u redu), pa redovi.');
+mc('2.7','Zašto za šifrat od 45 slova razmatramo baš dimenzije 3×15, 5×9…?','jer broj polja matrice mora biti 45',['jer je 45 prost broj','jer je ključ 45 bita','jer su to jedini 26-mogući ključevi']);
+
+/* ---------- 2.8 Supstitucija i Cezar ---------- */
+mc('2.8','Kod šifara supstitucije ključ je:','pravilo zamene',['broj kolona','obim štapa','kodna knjiga']);
+mc('2.8','Koliko ima mogućih ključeva za proizvoljnu zamenu slova engleskog alfabeta?','26!',['26','26<sup>2</sup>','2<sup>26</sup>']);
+mc('2.8','Koliki je pomeraj u klasičnoj Cezarovoj šifri?','3',['1','13','26']);
+mc('2.8','U Cezarovoj šifri slova X, Y i Z se zamenjuju slovima:','A, B i C',['X, Y i Z','D, E i F','C, B i A']);
+mc('2.8','Cezarova šifra spada u:','monoalfabetske šifre (prosta zamena)',['polialfabetske šifre','transpozicije','poligramske šifre']);
+mc('2.8','Šta je ključ Cezarove šifre?','pomeraj',['permutacija alfabeta','ključna reč','matrica']);
+mc('2.8','Formula dešifrovanja Cezarove šifre je:','P<sub>i</sub> = (C<sub>i</sub> + 26 − K<sub>E</sub>) mod 26',['P<sub>i</sub> = (C<sub>i</sub> + K<sub>E</sub>) mod 26','P<sub>i</sub> = (C<sub>i</sub> × K<sub>E</sub>) mod 26','P<sub>i</sub> = C<sub>i</sub> ⊕ K<sub>E</sub>']);
+mc('2.8','Šifrovanje slova Z (redni broj 25) ključem 4 daje slovo:','D',['C','E','A'],'(25 + 4) mod 26 = 29 mod 26 = 3 → D.');
+mc('2.8','Dešifrovanje slova A (redni broj 0) ključem 4 daje slovo:','W',['E','V','X'],'(0 + 26 − 4) mod 26 = 22 → W.');
+tf('2.8','Monoalfabetska prosta zamena menja redosled slova u tekstu.',false,'Redosled se ne menja; menjaju se samo slova.');
+open('2.6','Objasni šifru „skitali". Šta je ključ? U koju grupu šifara spada? Na čemu se zasniva kriptoanaliza?',['traka omotana oko štapa; poruka se piše po štapu, odmotana traka je šifrat','ključ: obim štapa (broj redova u koloni), npr. 4','grupa: šifre transpozicije (transpozicija kolona)','kriptoanaliza: mali prostor ključeva – potpuna pretraga mogućih obima/dimenzija, traži se smislen tekst']);
+open('2.8','Objasni Cezarovu šifru. Šta je ključ? U koju grupu šifara spada? Na čemu se zasniva kriptoanaliza?',['svako slovo se menja slovom za k mesta dalje (klasično 3; X,Y,Z → A,B,C); C=(P+K) mod 26','ključ: pomeraj','grupa: šifre supstitucije – monoalfabetske (prosta zamena)','kriptoanaliza: potpuna pretraga 26 ključeva (u proseku 13) i statistika učestanosti slova']);
+
+/* ---------- 2.9 Kriptoanaliza Cezara, statistika ---------- */
+mc('2.9','Koliko mogućih ključeva ima Cezarova šifra (po slajdu)?','26',['3','52','26!']);
+inp('2.9','Šifrat je CSYEVIXIVQMREXIH, ključ je 4. Koji je otvoreni tekst?',['YOUARETERMINATED'],'Svako slovo se vraća za 4 mesta: C→Y, S→O, Y→U …','Velikim slovima, bez razmaka.');
+mc('2.9','Kako se proširuje prostor ključeva Cezarove šifre?','ključ je bilo koja permutacija slova (26! > 2<sup>88</sup>)',['kraćim pomerajem','ponavljanjem istog slova','kompresijom teksta']);
+mc('2.9','Koji je problem proširenog prostora ključeva (permutacija slova)?','kako dostaviti ključ Bobu',['prostor je premali','šifra postaje transpozicija','sistem ne može da se šifruje']);
+mc('2.9','Statistika učestanosti slova pri razbijanju zamene pretpostavlja da je učestanost slova u jeziku i simbola u šifratu:','ista',['obrnuta','nezavisna','uvek 1/26']);
+mc('2.9','Najčešće slovo u engleskom jeziku je:','E',['A','T','O']);
+mc('2.9','Najčešće slovo u srpskom jeziku prema grafikonu sa slajda je:','A (11,73%)',['E (8,66%)','I (10,5%)','O (10,05%)'],'Redosled: A, I, O, E, N, R, T …');
+tf('2.9','Statistika učestanosti slova engleskog jezika može se direktno koristiti za dešifrovanje srpskog teksta.',false,'Učestanosti se razlikuju (engleski: E; srpski: A, I, O, E) – treba statistika jezika otvorenog teksta.');
+mc('2.9','Statistika učestanosti slova je koristan skraćeni napad na:','šifre zamene',['šifre transpozicije','OTP','kodne knjige']);
+mc('2.9','Pri potpunoj pretrazi Cezarovog šifrata CSYEVIXIVQMREXIH pogodak se prepoznaje po tome što je:','dešifrovani tekst smislen',['šifrat kraći','ključ jednak 3','broj slova paran']);
+
+/* ---------- 3.1 Modularna aritmetika ---------- */
+mc('3.1','U modularnoj aritmetici sa modulom n rezultati operacija su brojevi od:','0 do n−1',['1 do n','0 do n','1 do n−1']);
+mc('3.1','Primer modularne aritmetike sa slajda:','dani u godini (prosta godina nema 366. i 367. dan)',['pritisak na dnu mora','rimski brojevi','binarni sistem']);
+tf('3.1','26 mod 26 = 26.',false,'26 mod 26 = 0 (rezultati su od 0 do 25).');
+mc('3.1','Zašto se u dešifrovanju Cezara dodaje 26 (P = (C + 26 − K) mod 26)?','da razlika ne bude negativan broj',['jer je alfabet dug 27 slova','jer se tako dobija šifrat','da se poveća ključ']);
+mc('3.1','Moduo se koristi za računanja kod kojih se:','broji do maksimalne vrednosti i potom počinje od najmanjeg',['množi bez ograničenja','radi samo sa decimalnim brojevima','radi samo sa negativnim brojevima']);
+inp('3.1','Koliko je (0 + 26 − 4) mod 26?',['22'],'22 mod 26 = 22.','Upiši broj.');
+
+/* ---------- 3.2 Homofona ---------- */
+mc('3.2','Homofona šifra se postiže tako što šifrat:','ima više od 26 znakova, pa neka slova imaju više predstava',['ima manje od 26 znakova','koristi samo jedan alfabet','koristi matricu ključeva']);
+mc('3.2','Zašto neka slova u homofonoj šifri imaju više znakova?','da se izravnaju učestanosti najfrekventnijih slova',['da šifrat bude kraći','jer su ostala slova retka','da se izbegne XOR']);
+mc('3.2','Homofona šifra je otporna na:','statistički napad',['napad poznatog dela otvorenog teksta','napad grubom silom na sve šifre','nijedan napad']);
+mc('3.2','Homofona šifra je ranjiva na:','napade poznatog dela otvorenog teksta',['statistički napad','potpunu pretragu u svakom slučaju','XOR napad']);
+tf('3.2','Idealan šifrat treba da izgleda kao slučajan niz karaktera.',true,'Šifrat treba da prikrije statističke karakteristike otvorenog teksta; to je teško ostvarivo.');
+mc('3.2','U primeru sa slajda, koja slova imaju po dve kombinacije?','A, E, N, O, R, T',['A, B, C, D, E, F','S, T, U, V, W, X','E, T, A, O, I, S'],'To su najfrekventnija slova; 32 − 26 = 6 slova sa dve šifre.');
+inp('3.2','Primer koristi dvocifrene brojeve od 00 do 31. Koliko je ukupno različitih oznaka?',['32'],'00–31 = 32 oznake; 32 − 26 = 6 slova ima po dve.','Upiši broj.');
+inp('3.2','Koliko slova u primeru sa slajda ima po dve šifre (32 − 26)?',['6'],'A, E, N, O, R, T.','Upiši broj.');
+tf('3.2','Homofona šifra je otporna na napad poznatog dela otvorenog teksta.',false,'Otporna je na statistički napad, ali ranjiva na napad poznatog dela otvorenog teksta.');
+open('3.2','Kako homofona šifra onemogućava statističko određivanje ključa?',['proširuje skup znakova šifrata (više od 26 znakova za 26 slova)','najfrekventnija slova dobijaju više različitih znakova','izravnava učestanosti, šifrat liči na slučajan niz','ranjiva na napad poznatog dela otvorenog teksta']);
+
+/* ---------- 3.3 Hilova šifra ---------- */
+mc('3.3','Hilova šifra spada u:','poligramske šifre (supstitucija)',['šifre transpozicije','OTP','kodne knjige']);
+mc('3.3','Šta je ključ Hilove šifre?','matrica A (n × n)',['pomeraj','ključna reč','kodna knjiga']);
+mc('3.3','Formula šifrovanja Hilovom šifrom je:','C<sub>i</sub> = A × P<sub>i</sub> (mod 26)',['C<sub>i</sub> = P<sub>i</sub> + A (mod 26)','C<sub>i</sub> = A<sup>−1</sup> × P<sub>i</sub> (mod 26)','C<sub>i</sub> = P<sub>i</sub> ⊕ A']);
+mc('3.3','Formula dešifrovanja Hilovom šifrom je:','P<sub>i</sub> = A<sup>−1</sup> × C<sub>i</sub> (mod 26)',['P<sub>i</sub> = A × C<sub>i</sub> (mod 26)','P<sub>i</sub> = C<sub>i</sub> − A (mod 26)','P<sub>i</sub> = C<sub>i</sub> ⊕ A']);
+mc('3.3','Broj mogućih ključeva Hilove šifre (po slajdu) je:','26<sup>n²</sup>',['26!','26<sup>n</sup>','n!']);
+mc('3.3','Blok od dva slova naziva se:','bigram',['trigram','monogram','heksagram']);
+mc('3.3','Hilova šifra je preteča:','savremenih blokovskih šifri',['protočnih šifri','OTP','kodnih knjiga']);
+mc('3.3','Osnovna mana Hilove šifre je što je:','linearna – rešava se linearnim jednačinama',['prekratka za šifrovanje','potpuno nasumična','zavisna od kodne knjige']);
+tf('3.3','Hilova šifra prikriva strukturu jezika i učestanost pojedinačnih slova.',true);
+tf('3.3','Poznavanje dela otvorenog teksta (uz šifrat) može pomoći napadaču da rekonstruiše ključ Hilove šifre.',true);
+inp('3.3','Koliko ključeva (26<sup>n²</sup>) ima Hilova šifra za n = 2?',['456976'],'26<sup>4</sup> = 456 976.','Upiši broj.');
+mc('3.3','Otvoreni tekst MEETMEHERE se deli u blokove dužine n = 2. Koliko ima blokova?','5',['10','2','4'],'ME·ET·ME·HE·RE');
+mc('3.3','Šifrat teksta MEETMEHERE za A = [22 13; 11 5] je:','EWXJEWYTKZ',['EWXJEWYTKA','MEETMEHERE','WEXJWEYTZK']);
+open('3.3','Objasni šifrovanje Hilovom šifrom.',['tekst se deli u blokove dužine n, slova → brojevi A=0…Z=25, blok je kolona P<sub>i</sub>','ključ je matrica A (n×n)','C<sub>i</sub> = A × P<sub>i</sub> mod 26; dešifrovanje P<sub>i</sub> = A<sup>−1</sup> × C<sub>i</sub> mod 26','primer: n=2, A=[22 13; 11 5], MEETMEHERE → EWXJEWYTKZ']);
+open('3.3','Koje su osnovne mane Hilove šifre?',['linearna je – rešava se sistemom linearnih jednačina','šifre sa linearnim jednačinama nisu jake (jake ne smeju biti potpuno linearne)','uz poznat deo otvorenog teksta i šifrat napadač rekonstruiše ključ']);
+
+/* ---------- 3.4 Vižnerova šifra ---------- */
+mc('3.4','Vižnerova šifra je:','višestruka Cezarova šifra (polialfabetska)',['transpozicija kolona','OTP','homofona šifra']);
+mc('3.4','Formula Vižnerove šifre je:','C<sub>i</sub> = (P<sub>i</sub> + K<sub>i (mod m)</sub>) mod 26',['C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26 sa fiksnim pomerajem','C<sub>i</sub> = A × P<sub>i</sub> mod 26','C<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub>']);
+mc('3.4','Šta je ključ Vižnerove šifre?','ključna reč, tj. niz od m pomeraja',['jedan pomeraj','matrica','kodna knjiga']);
+mc('3.4','Šifrat za NAPADIUZORU sa ključem LIMUN je:','YIBUQTCLIEF',['YLALOTFKZCF','CSDGQXMNUEJ','ZJCVRUDMJFG'],'N+L=Y, A+I=I, P+M=B, A+U=U, D+N=Q, I+L=T, U+I=C, Z+M=L, O+U=I, R+N=E, U+L=F.');
+tf('3.4','Vižnerova šifra koristi isti alfabet zamene za svako slovo teksta.',false,'Za svako slovo koristi se drugi alfabet (polialfabetska).');
+mc('3.4','Polialfabetska zamena eliminiše:','preslikavanje frekvencija slova otvorenog teksta u šifrat',['potrebu za ključem','poznavanje algoritma','potrebu za modulom']);
+mc('3.4','Isto slovo otvorenog teksta u Vižnerovoj šifri:','može dati različita slova šifrata',['uvek daje isto slovo šifrata','daje samo slova iz ključa','daje isti broj']);
+mc('3.4','Kod Vižnerovog kvadrata (tabele), šifrat je slovo u preseku:','reda slova ključa i kolone slova otvorenog teksta',['reda otvorenog teksta i kolone šifrata','dve kolone ključa','dva reda otvorenog teksta']);
+mc('3.4','Koliko pomeraja koristi Vižnerova šifra sa ključnom rečju LIMUN?','5 (dužina ključa m = 5)',['1','26','11']);
+open('3.4','Objasni šifrovanje Vižnerovom (polialfabetskom) šifrom.',['višestruka Cezarova šifra, za svako slovo drugi alfabet','ključna reč dužine m daje m pomeraja, ključ se ponavlja','C<sub>i</sub> = (P<sub>i</sub> + K<sub>i mod m</sub>) mod 26','eliminiše preslikavanje frekvencija; primer LIMUN + NAPADIUZORU → YIBUQTCLIEF']);
+
+/* ---------- 3.5 Kriptoanaliza Vižnera / IC ---------- */
+mc('3.5','Čime se određuje dužina ključa Vižnerove šifre?','indeksom koincidencije',['potpunom pretragom svih 26 ključeva','XOR operacijom','Kerkhofovim principom']);
+mc('3.5','Indeks koincidencije je:','verovatnoća da su dva slučajno izabrana slova teksta identična',['broj različitih slova u tekstu','dužina ključa','broj ponavljanja ključa']);
+mc('3.5','Indeks koincidencije za prostu zamenu (engleski) iznosi približno:','0,065',['0,03846','0,5','1']);
+mc('3.5','Ako su sva slova podjednako verovatna (p<sub>i</sub> = 1/26), indeks koincidencije je približno:','0,03846',['0,065','0,26','1/2']);
+mc('3.5','Za polialfabetske šifre dugih ključeva indeks koincidencije je približno:','0,03846',['0,065','0','1']);
+mc('3.5','Pravilan redosled napada na Vižnerovu šifru je:','odrediti dužinu ključa → grupisati pozicije → statistički analizirati svaku grupu',['statistička analiza celog šifrata → dužina ključa','potpuna pretraga ključa → grupisanje','grupisanje → XOR → dužina ključa']);
+mc('3.5','Osnovna slabost Vižnerove šifre je:','relativno kratak ključ koji se ponavlja',['preveliki prostor ključeva','potreba za matricom','jednokratnost ključa']);
+tf('3.5','Vižnerova šifra može da se razbije direktnom primenom statističke analize na ceo šifrat.',false,'Ne može direktno – prvo se mora odrediti dužina ključa i grupisati pozicije.');
+mc('3.5','Kada se otkrije dužina ključa, šifrat se može posmatrati kao:','niz Cezarovih šifara',['jedna Hilova šifra','OTP','kodna knjiga']);
+mc('3.5','Šta bi pomoglo da Vižnerova šifra bude otpornija?','povećanje dužine ključa tako da se ne ponavlja',['kraći ključ','isti pomeraj za sva slova','ključ od jednog slova']);
+mc('3.5','Pri određivanju dužine ključa šifrat se upisuje u matricu sa:','k kolona i n/k redova',['n kolona i k redova','26 kolona','2 kolone']);
+mc('3.5','Ako se slučajno biraju 2 slova iz iste kolone te matrice, u pitanju je:','šifra proste zamene (isti pomeraj)',['potpuno slučajan niz','transpozicija','OTP']);
+mc('3.5','Ako se biraju 2 slova iz različitih kolona, njihova verovatnoća pojavljivanja je:','podjednaka (≈ 0,03846)',['≈ 0,065','0','1']);
+mc('3.5','Ako je izračunati IC šifrata blizu 0,065, to ukazuje da se šifrat ponaša kao:','prosta zamena (jedan alfabet / kratak ključ)',['slučajan niz','OTP','dug polialfabetski ključ']);
+open('3.5','Šta se koristi za kriptoanalizu Vižnerove šifre i kako?',['indeks koincidencije – za određivanje dužine ključa (≈0,065 prosta zamena, ≈0,03846 ujednačeno)','grupisanje pozicija: 1, m+1, 2m+1…; 2, m+2…','statistička analiza svake grupe (svaka je Cezar)']);
+
+/* ---------- 3.6 One-time pad ---------- */
+mc('3.6','Jedina dokazano sigurna šifra je:','one-time pad (Vernamova)',['Vižnerova','Hilova','Cezarova']);
+mc('3.6','Operacija koja se koristi u OTP-u je:','XOR (ekskluzivno ILI)',['sabiranje mod 26','množenje matricom','premeštanje kolona']);
+mc('3.6','Dešifrovanje u OTP-u: C<sub>i</sub> ⊕ K<sub>i</sub> =','P<sub>i</sub>',['C<sub>i</sub>','K<sub>i</sub>','0']);
+tf('3.6','Isti OTP ključ sme da se koristi više puta.',false,'Ključ je jednokratan i uništava se odmah nakon primene.');
+mc('3.6','Ključ OTP-a mora biti:','jednak ili duži od otvorenog teksta',['kraći od otvorenog teksta','dužine 26','dužine 8 bita']);
+mc('3.6','Šta se radi sa OTP ključem nakon primene?','uništava se odmah',['čuva se za sledeću poruku','objavljuje se','ponavlja se']);
+multi('3.6','Koje uslove treba da ispuni OTP ključ?',['slučajan, nepredvidiv','balansiran odnos 0 i 1','dužine bar kao otvoreni tekst','jednokratan'],['kratak i lak za pamćenje','ponavlja se periodično','poznat napadaču']);
+mc('3.6','Nepredvidiv ključ znači da je verovatnoća pogađanja narednog bita, bez obzira na poznate bitove, najviše:','1/2',['1/26','1/8','1']);
+mc('3.6','Osnovna mana OTP-a je:','ključ mora biti dug koliko tekst, pa je nepraktičan (distribucija ključeva)',['lako se razbija statistikom','ima samo 26 ključeva','nije dokazano siguran']);
+mc('3.6','OTP radi direktno nad:','binarnim podacima',['dekadnim brojevima','matricama','rečima iz rečnika']);
+mc('3.6','Koliko je 1 ⊕ 1?','0',['1','2','10']);
+mc('3.6','Koliko je 0 ⊕ 1?','1',['0','2','−1']);
+mc('3.6','OTP bezbednost se bazira na:','slučajnosti ključa i jednokratnoj upotrebi',['tajnosti algoritma','dužini otvorenog teksta','kodnoj knjizi']);
+open('3.6','Objasni upotrebu One-time-pad šifre.',['ključ je slučajan binarni niz, dužine bar kao otvoreni tekst','šifrovanje C<sub>i</sub> = P<sub>i</sub> ⊕ K<sub>i</sub> (XOR); dešifrovanje C<sub>i</sub> ⊕ K<sub>i</sub> = P<sub>i</sub>','ključ se koristi samo jednom i odmah uništava','primer: THREE HILLS + TRSRTLERSE → ELKRTRIHIS']);
+open('3.6','Koje uslove treba da ispuni OTP ključ?',['slučajan / nepredvidiv – verovatnoća pogađanja narednog bita ≤ 1/2','balansiran odnos 0 i 1','dužine bar kao otvoreni tekst','jednokratan']);
+open('3.6','Koje su dobre strane, a šta mane OTP?',['dobro: jedina dokazano sigurna šifra (teorijski i praktično najbezbednija)','mana: ključ jednak ili duži od teksta','mana: jednokratan, mora biti prava slučajna sekvenca','mana: teška distribucija ključeva – nepraktična za većinu situacija']);
+
+/* ---------- 3.7 Kodne knjige ---------- */
+mc('3.7','Kodna knjiga je:','rečnik koji uparuje reči i kodne oznake',['tabela 26 alfabeta','matrica ključeva','binarni slučajni niz']);
+mc('3.7','Šta je ključ kod kodne knjige?','sama kodna knjiga',['pomeraj','matrica','XOR niz']);
+mc('3.7','Sigurnost sistema sa kodnom knjigom zasniva se na:','fizičkoj bezbednosti kodne knjige',['dužini ključa','statistici jezika','matrici A']);
+mc('3.7','Koliko primeraka knjige se koristi?','jedan za šifrovanje, drugi za dešifrovanje',['samo jedan za obe strane','tri','nijedan']);
+tf('3.7','Kodna knjiga menja pojedinačna slova teksta.',false,'Uparuje cele reči sa kodnim oznakama.');
+mc('3.7','Prema primeru sa slajda, kod za reč „fest" je:','13732',['13605','13850','13500'],'Februar = 13605, fest = 13732, finansije = 13850.');
+mc('3.7','Šta se dešava ako kodna knjiga dospe napadaču?','sistem više nije siguran – sigurnost je u fizičkoj zaštiti knjige',['ništa, jer je algoritam složen','napadač ne može da je iskoristi','knjiga se automatski menja']);
+open('3.7','Objasni upotrebu kodne knjige. Šta je ključ?',['rečnik koji uparuje reči i kodne oznake (npr. Februar = 13605, fest = 13732)','jedan primerak knjige za šifrovanje, drugi za dešifrovanje','ključ je kodna knjiga','sigurnost = fizička bezbednost knjige']);
+
+/* ---------- 3.8 Blokovske i protočne ---------- */
+mc('3.8','Savremena simetrična kriptografija deli se na:','protočne (sekvencijalne) i blokovske šifre',['transpozicije i supstitucije','simetrične i asimetrične','klasične i kodne']);
+mc('3.8','Protočne (sekvencijalne, streaming) šifre algoritam primenjuju na:','bit (karakter ili bajt)',['blokove od 128 bita','ceo tekst odjednom','matrice']);
+mc('3.8','Blokovske šifre otvoreni tekst dele u blokove od:','64 (128 ili više) bita',['1 bit','8 slova','26 bita']);
+tf('3.8','Blokovske šifre šifruju podatke bit po bit.',false,'To rade protočne; blokovske šifruju blokove (64, 128 ili više bita).');
+mc('3.8','Sekvencijalna šifra je isto što i:','protočna (streaming) šifra',['blokovska šifra','kodna knjiga','asimetrična šifra']);
+mc('3.8','Kod blokovskih šifara svaki blok se šifruje:','nezavisno',['zajedno sa celim tekstom odjednom','samo prvi blok','ključem koji je javan']);
+open('3.8','Objasni sekvencijalne (protočne) šifre.',['savremene simetrične šifre','algoritam se primenjuje na bit (karakter ili bajt)','podaci se šifruju kao tok (stream)']);
+open('3.8','Objasni blokovske šifre.',['savremene simetrične šifre','otvoreni tekst se deli u blokove od 64 (128 ili više) bita','svaki blok se šifruje nezavisno']);
+
+/* =====================================================================
+   GENERATORI ZADATAKA (svaki put novi brojevi / reči)
+   ===================================================================== */
+const GENS=[];
+const gen=(id,topic,label,make)=>GENS.push({id,topic,label,make});
+const numCheck=(ans,int)=>r=>{const v=parseNum(r,int);return !isNaN(v)&&Math.abs(v-ans)<1e-9;};
+const inputQ=(q,hint,answerText,check,expl)=>({type:'in',q,hint,answerText,check,expl});
+
+gen('atbash','1.2','Atbaš šifrovanje',()=>{const w=pick(WORDS),c=atbash(w);
+  return inputQ(`Šifruj <b>Atbaš</b> šifrom (A↔Z, B↔Y, C↔X, …) otvoreni tekst <b class="mono">${w}</b>.`,'Velikim slovima, bez razmaka.',c,r=>normText(r)===c,
+  `Svako slovo se menja „simetričnim" slovom sa kraja alfabeta (slovo sa rednim brojem n → 25 − n).<br>${[...w].slice(0,5).map(ch=>`${ch}→<b>${A[25-A.indexOf(ch)]}</b>`).join(', ')}${w.length>5?' …':''}<br>Šifrat: <b class="mono">${c}</b>`);});
+
+gen('caesar-enc','2.8','Cezar – šifrovanje reči',()=>{const w=pick(WORDS),k=Math.random()<.3?3:rnd(1,25),c=caesar(w,k);
+  return inputQ(`Šifruj Cezarovom šifrom (ključ = <b>${k}</b>) otvoreni tekst <b class="mono">${w}</b>.`,'Velikim slovima, bez razmaka. (A=0, B=1, … Z=25)',c,r=>normText(r)===c,
+  `C<sub>i</sub> = (P<sub>i</sub> + ${k}) mod 26<br>${steps(w,k,1)}<br>Šifrat: <b class="mono">${c}</b>`);});
+
+gen('caesar-dec','2.8','Cezar – dešifrovanje reči',()=>{const w=pick(WORDS),k=rnd(1,25),c=caesar(w,k);
+  return inputQ(`Dešifruj Cezarov šifrat <b class="mono">${c}</b> ako je ključ = <b>${k}</b>.`,'Velikim slovima, bez razmaka.',w,r=>normText(r)===w,
+  `P<sub>i</sub> = (C<sub>i</sub> + 26 − ${k}) mod 26<br>${steps(c,k,-1)}<br>Otvoreni tekst: <b class="mono">${w}</b>`);});
+
+gen('caesar-num','2.8','Cezar – formula na jednom slovu',()=>{const k=rnd(2,25);let p=rnd(0,25);if(Math.random()<.7)p=rnd(Math.max(0,26-k),25);const v=mod(p+k,26);
+  return inputQ(`Slovo <b>${A[p]}</b> ima redni broj ${p}. Koliko je C<sub>i</sub> = (P<sub>i</sub> + K<sub>E</sub>) mod 26 za ključ K<sub>E</sub> = ${k}?`,'Upiši broj (0–25).',String(v),numCheck(v,true),
+  `(${p} + ${k}) mod 26 = ${p+k} mod 26 = <b>${v}</b> → slovo <b>${A[v]}</b>.`);});
+
+gen('caesar-dec-num','2.8','Cezar – formula dešifrovanja',()=>{const k=rnd(2,25);const c=rnd(0,k-1);const v=mod(c+26-k,26);
+  return inputQ(`Slovo šifrata ima redni broj C<sub>i</sub> = ${c}, ključ K<sub>E</sub> = ${k}. Koliko je P<sub>i</sub> = (C<sub>i</sub> + 26 − K<sub>E</sub>) mod 26?`,'Upiši broj (0–25).',String(v),numCheck(v,true),
+  `(${c} + 26 − ${k}) mod 26 = ${c+26-k} mod 26 = <b>${v}</b> → slovo <b>${A[v]}</b>.`);});
+
+gen('caesar-key','2.9','Cezar – pogađanje ključa',()=>{const w=pick(WORDS),k=rnd(1,25),c=caesar(w,k);
+  return inputQ(`Cezarov šifrat počinje slovom <b>${c[0]}</b>, a poznato je da otvoreni tekst počinje slovom <b>${w[0]}</b>. Koliki je ključ (pomeraj)?`,'Upiši broj 1–25.',String(k),numCheck(k,true),
+  `K = (C − P) mod 26 = (${A.indexOf(c[0])} − ${A.indexOf(w[0])}) mod 26 = <b>${k}</b>. (Šifrat: ${c}, otvoreni tekst: ${w}.)`);});
+
+gen('mod-op','3.1','Modularna aritmetika',()=>{const t=rnd(0,2);
+  if(t===0){const n=pick([26,12,7,10]),a=rnd(10,99),b=rnd(10,99),v=(a+b)%n;return inputQ(`Izračunaj (${a} + ${b}) mod ${n}.`,'Upiši broj.',String(v),numCheck(v,true),`${a} + ${b} = ${a+b}; ${a+b} mod ${n} = <b>${v}</b> (ostatak pri deljenju sa ${n}).`);}
+  if(t===1){const a=rnd(27,300),v=a%26;return inputQ(`Izračunaj ${a} mod 26.`,'Upiši broj.',String(v),numCheck(v,true),`${a} = ${Math.floor(a/26)}·26 + ${v} → <b>${v}</b>.`);}
+  const c=rnd(0,10),k=rnd(11,25),v=mod(c+26-k,26);return inputQ(`Izračunaj (${c} + 26 − ${k}) mod 26.`,'Upiši broj.',String(v),numCheck(v,true),`${c} + 26 − ${k} = ${c+26-k}; mod 26 = <b>${v}</b>.`);});
+
+gen('keyspace-bits','2.3','Prostor ključeva ključa od b bita',()=>{const b=rnd(4,14),v=2**b;
+  if(Math.random()<.5)return inputQ(`Ključ ima <b>${b}</b> bita. Koliko ključeva ima prostor ključeva?`,'Upiši broj (npr. 256).',String(v),numCheck(v,true),`Prostor ključeva je 2<sup>${b}</sup> = <b>${fmt(v)}</b>.`);
+  return inputQ(`Ključ ima <b>${b}</b> bita. Koliko ključeva se u proseku mora testirati pri potpunoj pretrazi?`,'Upiši broj.',String(v/2),numCheck(v/2,true),`Prostor je 2<sup>${b}</sup> = ${fmt(v)}, u proseku polovina: 2<sup>${b-1}</sup> = <b>${fmt(v/2)}</b>.`);});
+
+gen('brute-time','2.4','Vreme potpune pretrage (stepeni dvojke)',()=>{
+  if(Math.random()<.65){const n=rnd(56,128),s=pick([20,30,40]);const x=n-1-s;
+    return inputQ(`Ključ ima <b>${n}</b> bita. Napadač testira 2<sup>${s}</sup> ključeva u sekundi. Potpuna pretraga u proseku traje 2<sup>x</sup> sekundi. Koliko je x?`,'Upiši ceo broj. (U proseku se testira polovina prostora.)',String(x),numCheck(x,true),`Prostor: 2<sup>${n}</sup>; u proseku polovina: 2<sup>${n-1}</sup>. Vreme = 2<sup>${n-1}</sup> / 2<sup>${s}</sup> = 2<sup>${n-1}-${s}</sup> = 2<sup><b>${x}</b></sup> s.`);}
+  const m=rnd(40,70),s=pick([20,30]);const x=m-s;
+  return inputQ(`Za neki sistem postoji skraćeni napad koji zahteva proveru samo 2<sup>${m}</sup> ključeva. Testira se 2<sup>${s}</sup> ključeva u sekundi. Napad traje 2<sup>x</sup> sekundi. Koliko je x?`,'Upiši ceo broj.',String(x),numCheck(x,true),`2<sup>${m}</sup> / 2<sup>${s}</sup> = 2<sup><b>${x}</b></sup> sekundi.`);});
+
+gen('double-count','2.6','Broj šifrata dvostruke transpozicije',()=>{const r=rnd(3,8),c=rnd(2,6);let f=1;const fa=n=>{let x=1;for(let i=2;i<=n;i++)x*=i;return x;};const v=fa(r)*fa(c);
+  return inputQ(`Dvostruka transpozicija koristi matricu <b>[${r} × ${c}]</b> (${r} redova, ${c} kolona). Koliko je mogućih šifrata (m! × n!)?`,'Upiši broj.',String(v),numCheck(v,true),`${r}! × ${c}! = ${fa(r)} × ${fa(c)} = <b>${fmt(v)}</b>.`);});
+
+gen('col-transp','2.6','Transpozicija kolona (šifrovanje)',()=>{const c=rnd(3,5),r=rnd(3,4),t=pick(PHRASES).slice(0,r*c),ct=colTransp(t,c);
+  const rows=[];for(let i=0;i<r;i++)rows.push([...t.slice(i*c,i*c+c)]);
+  return inputQ(`Transpozicija kolona, matrica sa <b>${c}</b> kolona i ${r} reda. Otvoreni tekst <b class="mono">${t}</b> upisuje se po redovima. Koji je šifrat (čitanje kolona sleva udesno)?`,'Velikim slovima, bez razmaka.',ct,x=>normText(x)===ct,
+  `Matrica ${r}×${c}:<table class="g">${rows.map(rw=>`<tr>${rw.map(ch=>`<td>${ch}</td>`).join('')}</tr>`).join('')}</table>Čitamo kolonu po kolonu: <b class="mono">${ct}</b>.`);});
+
+gen('col-transp-key','2.6','Transpozicija kolona sa ključnom rečju',()=>{const key=pick(['KOSA','SUNCE','LIMUN','MOST','VODA','ZIMA','PERA','KLJUC']),c=key.length,r=rnd(3,4),t=pick(PHRASES).slice(0,r*c);
+  const ord=keyOrder(key),ct=colTransp(t,c,ord);const rank=[];ord.forEach((ci,p)=>rank[ci]=p+1);
+  const rows=[];for(let i=0;i<r;i++)rows.push([...t.slice(i*c,i*c+c)]);
+  return inputQ(`Transpozicija kolona sa ključem <b class="mono">${key}</b> (matrica ${r}×${c}). Otvoreni tekst <b class="mono">${t}</b> upisuje se po redovima, a kolone se čitaju redom prema alfabetskom redosledu slova ključa. Koji je šifrat?`,'Velikim slovima, bez razmaka.',ct,x=>normText(x)===ct,
+  `Brojevi kolona (po alfabetu slova ključa): ${[...key].map((ch,i)=>`${ch}=${rank[i]}`).join(', ')}.<br><table class="g"><tr>${[...key].map(ch=>`<th>${ch}</th>`).join('')}</tr><tr>${rank.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(rw=>`<tr>${rw.map(ch=>`<td>${ch}</td>`).join('')}</tr>`).join('')}</table>Čitamo kolone 1, 2, 3…: <b class="mono">${ct}</b>.`);});
+
+gen('hill-enc','3.3','Hilova šifra – šifrovanje bloka',()=>{
+  let M;if(Math.random()<.25)M=[[22,13],[11,5]];else do{M=[[rnd(1,15),rnd(0,15)],[rnd(0,15),rnd(1,15)]];}while(gcd(det2(M),26)!==1);
+  const p=[rnd(0,25),rnd(0,25)],c=mulMV(M,p),pt=A[p[0]]+A[p[1]],ct=A[c[0]]+A[c[1]];
+  return inputQ(`Hilova šifra, n = 2, ključ A = ${mx(M)}. Šifruj blok <b class="mono">${pt}</b>, tj. P = ${vx(p)} (A=0 … Z=25). Upiši šifrat (dva slova).`,'Dva velika slova.',ct,x=>normText(x)===ct,
+  `C = A × P mod 26<br>C<sub>0</sub> = (${M[0][0]}·${p[0]} + ${M[0][1]}·${p[1]}) mod 26 = ${M[0][0]*p[0]+M[0][1]*p[1]} mod 26 = <b>${c[0]}</b> → ${A[c[0]]}<br>C<sub>1</sub> = (${M[1][0]}·${p[0]} + ${M[1][1]}·${p[1]}) mod 26 = ${M[1][0]*p[0]+M[1][1]*p[1]} mod 26 = <b>${c[1]}</b> → ${A[c[1]]}<br>Šifrat: <b class="mono">${ct}</b>`);});
+
+gen('hill-dec','3.3','Hilova šifra – dešifrovanje bloka',()=>{
+  let M;do{M=[[rnd(1,15),rnd(0,15)],[rnd(0,15),rnd(1,15)]];}while(gcd(det2(M),26)!==1);
+  const Mi=hillInv(M),p=[rnd(0,25),rnd(0,25)],c=mulMV(M,p),pt=A[p[0]]+A[p[1]],ct=A[c[0]]+A[c[1]];
+  return inputQ(`Hilova šifra, n = 2. Poznata je inverzna matrica ključa A<sup>−1</sup> = ${mx(Mi)}. Dešifruj šifrat blok <b class="mono">${ct}</b>, tj. C = ${vx(c)} (P = A<sup>−1</sup> × C mod 26). Upiši dva slova.`,'Dva velika slova.',pt,x=>normText(x)===pt,
+  `P<sub>0</sub> = (${Mi[0][0]}·${c[0]} + ${Mi[0][1]}·${c[1]}) mod 26 = ${Mi[0][0]*c[0]+Mi[0][1]*c[1]} mod 26 = <b>${p[0]}</b> → ${A[p[0]]}<br>P<sub>1</sub> = (${Mi[1][0]}·${c[0]} + ${Mi[1][1]}·${c[1]}) mod 26 = ${Mi[1][0]*c[0]+Mi[1][1]*c[1]} mod 26 = <b>${p[1]}</b> → ${A[p[1]]}<br>Otvoreni tekst: <b class="mono">${pt}</b>`);});
+
+gen('homo-dec','3.2','Homofona šifra – dešifrovanje',()=>{const w=pick(['CIPHER','SECRET','ATTACK','SYSTEM','PUBLIC','NETWORK','TEETH','ROTOR']),codes=[...w].map(l=>pick(HOMO[l]));
+  return inputQ(`Homofona šifra iz primera sa slajda (dvocifreni brojevi 00–31):${homoTable()}Dešifruj: <b class="mono">${codes.join(' ')}</b>`,'Velikim slovima, bez razmaka.',w,x=>normText(x)===w,
+  `Svaki par cifara odgovara jednom slovu: ${codes.map(c=>`${c}→<b>${HOMO_REV[c]}</b>`).join(', ')}.<br>Otvoreni tekst: <b class="mono">${w}</b>`);});
+
+gen('homo-enc','3.2','Homofona šifra – šifrovanje',()=>{const w=pick(['TEETH','ROTOR','ATTACK','NOTE','ARENA','TREAT']);
+  const ans=[...w].map(l=>HOMO[l][0]).join(' ');
+  return inputQ(`Homofona šifra iz primera sa slajda:${homoTable()}Šifruj reč <b class="mono">${w}</b>. (Slova koja imaju dve šifre možeš da šifruješ bilo kojom; upiši dvocifrene brojeve.)`,'Npr. 08 13 17 24 31 – dvocifreni brojevi, odvojeni razmakom.',ans,x=>{const d=String(x).replace(/\D/g,'');if(d.length!==w.length*2)return false;for(let i=0;i<w.length;i++)if(!HOMO[w[i]].includes(d.substr(i*2,2)))return false;return true;},
+  `Mogući kodovi: ${[...w].map(l=>`${l}=${HOMO[l].join(' ili ')}`).join(', ')}.<br>Jedno ispravno rešenje: <b class="mono">${ans}</b>.`);});
+
+gen('vig-enc','3.4','Vižner – šifrovanje',()=>{const key=pick(['LIMUN','SUNCE','KOSA','MOST','LEMON','KEY','ZIMA']),w=pick(WORDS).slice(0,rnd(6,8)),c=vig(w,key,1);
+  const rows=[...w].map((ch,i)=>{const k=key[i%key.length],pn=A.indexOf(ch),kn=A.indexOf(k);return `<tr><td>${ch}</td><td>${k}</td><td>${pn}+${kn}</td><td>${mod(pn+kn,26)}</td><td><b>${A[mod(pn+kn,26)]}</b></td></tr>`;}).join('');
+  return inputQ(`Šifruj Vižnerovom šifrom otvoreni tekst <b class="mono">${w}</b> ključem <b class="mono">${key}</b> (A=0 … Z=25, ključ se ponavlja).`,'Velikim slovima, bez razmaka.',c,x=>normText(x)===c,
+  `C<sub>i</sub> = (P<sub>i</sub> + K<sub>i mod m</sub>) mod 26, m = ${key.length}<table class="g"><tr><th>P</th><th>K</th><th>P+K</th><th>mod 26</th><th>C</th></tr>${rows}</table>Šifrat: <b class="mono">${c}</b>`);});
+
+gen('vig-dec','3.4','Vižner – dešifrovanje',()=>{const key=pick(['LIMUN','SUNCE','KOSA','MOST','LEMON','KEY','ZIMA']),w=pick(WORDS).slice(0,rnd(6,8)),c=vig(w,key,1);
+  const rows=[...c].map((ch,i)=>{const k=key[i%key.length],cn=A.indexOf(ch),kn=A.indexOf(k);return `<tr><td>${ch}</td><td>${k}</td><td>${cn}−${kn}</td><td>${mod(cn-kn,26)}</td><td><b>${A[mod(cn-kn,26)]}</b></td></tr>`;}).join('');
+  return inputQ(`Dešifruj Vižnerov šifrat <b class="mono">${c}</b> ključem <b class="mono">${key}</b>.`,'Velikim slovima, bez razmaka.',w,x=>normText(x)===w,
+  `P<sub>i</sub> = (C<sub>i</sub> − K<sub>i mod m</sub>) mod 26 (isto što i + 26 − K)<table class="g"><tr><th>C</th><th>K</th><th>C−K</th><th>mod 26</th><th>P</th></tr>${rows}</table>Otvoreni tekst: <b class="mono">${w}</b>`);});
+
+gen('vig-group','3.5','Vižner – grupisanje pozicija',()=>{const m=rnd(3,6),n=rnd(14,24),g=rnd(1,m);const pos=[];for(let i=g;i<=n;i+=m)pos.push(i);
+  return inputQ(`Šifrat Vižnerove šifre ima <b>${n}</b> slova, a dužina ključa je <b>m = ${m}</b>. Koje pozicije (brojeći od 1) čine <b>${g}.</b> grupu za statističku analizu?`,'Upiši brojeve razdvojene zarezom, npr. 2, 6, 10',pos.join(', '),x=>{const d=(String(x).match(/\d+/g)||[]).map(Number);return d.length===pos.length&&d.every((v,i)=>v===pos[i]);},
+  `Grupa ${g}: ${g}, ${g}+m, ${g}+2m, … = ${g}, ${g+m}, ${g+2*m}, … (do ${n}) → <b>${pos.join(', ')}</b>. Svaka grupa je običan Cezar sa jednim pomerajem.`);});
+
+gen('vig-keylen','3.5','Vižner – dužina ključa iz indeksa koincidencije',()=>{
+  for(;;){const k=pick([2,3,4,5,6,8]),n=1200;const I=(((n/k-1)/(n-1))*0.065+((n-n/k)/(n-1))*0.03846);const Ir=Math.round(I*10000)/10000;
+    const kk=0.027*n/((n-1)*Ir+0.065-0.0385*n);if(Math.round(kk)!==k)continue;
+    return inputQ(`Šifrat Vižnerove šifre ima <b>n = ${n}</b> slova, a izračunat indeks koincidencije je <b>I = ${String(Ir).replace('.',',')}</b>. Koristeći k ≈ 0,027·n / ((n−1)·I + 0,065 − 0,0385·n), proceni dužinu ključa k (zaokruži na ceo broj).`,'Upiši ceo broj.',String(k),x=>{const v=parseNum(x,false);return !isNaN(v)&&Math.round(v)===k;},
+    `(n−1)·I = ${(n-1)} · ${Ir} = ${((n-1)*Ir).toFixed(3)}<br>imenilac = ${((n-1)*Ir).toFixed(3)} + 0,065 − 0,0385·${n} = ${((n-1)*Ir+0.065-0.0385*n).toFixed(3)}<br>brojilac = 0,027 · ${n} = ${(0.027*n).toFixed(1)}<br>k ≈ ${kk.toFixed(2)} → <b>${k}</b>`);}});
+
+gen('otp-bits','3.6','OTP – XOR bitova',()=>{const L=rnd(6,8),P=Array.from({length:L},()=>rnd(0,1)).join(''),K=Array.from({length:L},()=>rnd(0,1)).join(''),C=xorStr(P,K);
+  if(Math.random()<.65)return inputQ(`OTP: otvoreni tekst P = <b class="mono">${P}</b>, ključ K = <b class="mono">${K}</b>. Izračunaj šifrat C = P ⊕ K.`,`Upiši ${L} bitova.`,C,x=>normText(x)===C,`XOR daje 1 kada su bitovi različiti:<br><span class="mono">${P}<br>${K}<br>${C}</span>`);
+  return inputQ(`OTP: šifrat C = <b class="mono">${C}</b>, ključ K = <b class="mono">${K}</b>. Dešifruj: P = C ⊕ K.`,`Upiši ${L} bitova.`,P,x=>normText(x)===P,`C ⊕ K = P ⊕ K ⊕ K = P:<br><span class="mono">${C}<br>${K}<br>${P}</span>`);});
+
+gen('otp-word','3.6','OTP – šifrovanje slova (tabela kodova)',()=>{const L=rnd(4,5),P=Array.from({length:L},()=>pick(OTPA)).join(''),K=Array.from({length:L},()=>pick(OTPA)).join('');
+  const Cb=[...P].map((p,i)=>xorStr(bin3(p),bin3(K[i]))),C=Cb.map(b=>OTPA[parseInt(b,2)]).join('');
+  const dec=Math.random()<.4;
+  const tb=`<table class="g"><tr><th>P</th><th>kod P</th><th>K</th><th>kod K</th><th>kod C</th><th>C</th></tr>${[...P].map((p,i)=>`<tr><td>${p}</td><td>${bin3(p)}</td><td>${K[i]}</td><td>${bin3(K[i])}</td><td>${Cb[i]}</td><td><b>${Cb[i]?OTPA[parseInt(Cb[i],2)]:''}</b></td></tr>`).join('')}</table>`;
+  if(!dec)return inputQ(`OTP sa alfabetom od 8 slova:${otpTable()}Otvoreni tekst: <b class="mono">${P}</b>, ključ: <b class="mono">${K}</b>. Odredi šifrat (slova).`,'Velika slova, bez razmaka.',C,x=>normText(x)===C,`Svako slovo → 3 bita, XOR sa bitovima ključa, nazad u slovo:${tb}Šifrat: <b class="mono">${C}</b>`);
+  return inputQ(`OTP sa alfabetom od 8 slova:${otpTable()}Šifrat: <b class="mono">${C}</b>, ključ: <b class="mono">${K}</b>. Odredi otvoreni tekst (isti XOR postupak).`,'Velika slova, bez razmaka.',P,x=>normText(x)===P,`Dešifrovanje je isti XOR (C ⊕ K = P):${tb}Otvoreni tekst: <b class="mono">${P}</b>`);});
+
+/* =====================================================================
+   SKLADIŠTE (localStorage) + IZVEDENA STATISTIKA
+   ===================================================================== */
+let store={v:1,log:[],rounds:[]};let storageOk=true;
+function load(){try{const s=localStorage.getItem(LS_KEY);if(s){const o=JSON.parse(s);if(o&&Array.isArray(o.log)&&Array.isArray(o.rounds))store=o;}}catch(e){storageOk=false;}}
+function save(){try{if(store.log.length>8000)store.log=store.log.slice(-8000);localStorage.setItem(LS_KEY,JSON.stringify(store));}catch(e){storageOk=false;}}
+function derive(){
+  const byQ=new Map(),byT=new Map();
+  for(const e of store.log){
+    let q=byQ.get(e.id);if(!q){q={n:0,last:[],lastRound:0};byQ.set(e.id,q);}
+    q.n++;q.last.push(e.s);if(q.last.length>5)q.last.shift();q.lastRound=e.r;
+    let t=byT.get(e.topic);if(!t){t={n:0,sum:0,last:[]};byT.set(e.topic,t);}
+    t.n++;t.sum+=e.s;t.last.push(e.s);if(t.last.length>10)t.last.shift();
+  }
+  return {byQ,byT};
+}
+function topicInfo(id,D){
+  const t=D.byT.get(id);if(!t)return {n:0,acc:null,status:'none',label:'nije testirano'};
+  const acc=mean(t.last);let status,label;
+  if(t.n<2){status='few';label='premalo podataka';}
+  else if(acc<0.75){status='weak';label='treba ponoviti';}
+  else if(acc>=0.9&&t.n>=4){status='master';label='savladano';}
+  else{status='good';label='dobro, još vežbaj';}
+  return {n:t.n,acc,status,label,total:mean([t.sum/t.n])};
+}
+const chipClass={none:'none',few:'none',weak:'bad',good:'mid',master:'ok'};
+const pct=x=>Math.round(x*100)+'%';
+function isMastered(h){return h&&h.last.length>=2&&h.last[h.last.length-1]>=0.75&&h.last[h.last.length-2]>=0.75;}
+function recommendations(D,limit=3){
+  const rows=TOPICS.map(t=>({t,i:topicInfo(t.id,D)}));
+  const weak=rows.filter(r=>r.i.status==='weak').sort((a,b)=>a.i.acc-b.i.acc);
+  const mid=rows.filter(r=>r.i.status==='good'&&r.i.acc<0.9).sort((a,b)=>a.i.acc-b.i.acc);
+  const few=rows.filter(r=>r.i.status==='few'&&r.i.acc!==null&&r.i.acc<0.5);
+  const none=rows.filter(r=>r.i.status==='none');
+  return {list:[...weak,...few,...mid].slice(0,limit),none,rows};
+}
+function lessonStats(D){
+  const o={1:{n:0,sum:0},2:{n:0,sum:0},3:{n:0,sum:0}};
+  for(const t of TOPICS){const x=D.byT.get(t.id);if(x){const last=x.last;o[t.lesson].n+=last.length;o[t.lesson].sum+=last.reduce((a,b)=>a+b,0);}}
+  return o;
+}
+
+/* =====================================================================
+   BIRANJE PITANJA ZA RUNDU
+   ===================================================================== */
+function topicWeight(id,D){const i=topicInfo(id,D);const acc=i.acc===null?0.5:i.acc;return 1+2*(1-acc);}
+function buildRound(){
+  const D=derive(),rno=store.rounds.length+1;
+  const items=[];
+  for(const q of BANK){
+    const h=D.byQ.get(q.id);let w;
+    if(!h)w=5;
+    else{const lastS=h.last[h.last.length-1];if(lastS<0.5)w=3.5;else if(isMastered(h))w=0.35;else w=1.2;
+      if(h.lastRound===rno-1)w*=0.02;}
+    items.push({kind:'s',ref:q,topic:q.topic,w:w*topicWeight(q.topic,D),open:q.type==='open'});
+  }
+  for(const g of GENS){
+    const h=D.byQ.get('g:'+g.id);let w=12;
+    if(!h)w=25;else{const lastS=h.last[h.last.length-1];if(lastS<0.5)w=20;else if(isMastered(h)&&h.n>=4)w=6;}
+    items.push({kind:'g',ref:g,topic:g.topic,w:w*topicWeight(g.topic,D)});
+  }
+  const chosen=[],tc={};let opens=0,gens=0;
+  while(chosen.length<ROUND_SIZE){
+    let el=items.filter(it=>!chosen.includes(it)&&(tc[it.topic]||0)<2&&!(it.open&&opens>=2)&&!(it.kind==='g'&&gens>=4));
+    if(!el.length)el=items.filter(it=>!chosen.includes(it));
+    const tot=el.reduce((s,it)=>s+it.w,0);let r=Math.random()*tot,sel=el[el.length-1];
+    for(const it of el){r-=it.w;if(r<=0){sel=it;break;}}
+    chosen.push(sel);tc[sel.topic]=(tc[sel.topic]||0)+1;if(sel.open)opens++;if(sel.kind==='g')gens++;
+  }
+  return shuffle(chosen).map(instantiate);
+}
+function instantiate(it){
+  if(it.kind==='g'){const x=it.ref.make();return {id:'g:'+it.ref.id,topic:it.ref.topic,type:'in',gen:true,q:x.q,hint:x.hint,check:x.check,answerText:x.answerText,expl:x.expl};}
+  const q=it.ref;
+  if(q.type==='mc'){const opts=shuffle(q.o.map((t,i)=>({t,c:i===0})));return {id:q.id,topic:q.topic,type:'mc',q:q.q,opts,expl:q.expl,answerText:q.o[0]};}
+  if(q.type==='tf'){return {id:q.id,topic:q.topic,type:'mc',q:q.q,opts:[{t:'Tačno',c:q.truth},{t:'Netačno',c:!q.truth}],expl:q.expl,answerText:q.truth?'tvrdnja je tačna':'tvrdnja je netačna',tf:true};}
+  if(q.type==='multi'){const opts=shuffle([...q.rights.map(t=>({t,c:true})),...q.wrongs.map(t=>({t,c:false}))]);return {id:q.id,topic:q.topic,type:'multi',q:q.q,opts,expl:q.expl,answerText:q.rights.join(' · ')};}
+  if(q.type==='in'){const nums=q.answers.every(a=>!isNaN(parseNum(a,true)));return {id:q.id,topic:q.topic,type:'in',q:q.q,hint:q.hint,answerText:q.answers[0],expl:q.expl,check:r=>q.answers.some(a=>normText(a)===normText(r))||(nums&&!isNaN(parseNum(r,true))&&q.answers.some(a=>parseNum(a,true)===parseNum(r,true)))};}
+  return {id:q.id,topic:q.topic,type:'open',q:q.q,points:q.points,expl:q.expl,answerText:q.points.join(' • ')};
+}
+
+/* =====================================================================
+   STANJE APLIKACIJE I PRIKAZ
+   ===================================================================== */
+const app=$('#app'),dlg=$('#dlg'),dlgBody=$('#dlgBody');
+let view='home',round=null;
+function setTab(){$('#tabTest').classList.toggle('on',view!=='stats');$('#tabStats').classList.toggle('on',view==='stats');}
+$('#tabTest').onclick=()=>{view=round&&!round.done?'quiz':'home';render();};
+$('#tabStats').onclick=()=>{view='stats';render();};
+function render(){setTab();if(view==='home')renderHome();else if(view==='quiz')renderQuiz();else renderStats();window.scrollTo(0,0);}
+
+function overallLine(D){
+  const n=store.log.length,acc=n?mean(store.log.map(e=>e.s)):0;
+  const mastered=BANK.filter(q=>isMastered(D.byQ.get(q.id))).length;
+  return {n,acc,mastered,total:BANK.length,rounds:store.rounds.length};
+}
+function renderHome(){
+  const D=derive(),o=overallLine(D),rec=recommendations(D);
+  app.innerHTML=`
+  <div class="card">
+    <h1>Test znanja – Zaštita informacionih sistema</h1>
+    <p class="muted">Svaki test ima <b>${ROUND_SIZE} pitanja i zadataka</b> iz sve tri lekcije (uvod, sigurnost kriptosistema, klasične šifre). Posle svakog testa dobijaš statistiku i preporuku šta da ponoviš, a klikom na <b>OK</b> odmah kreće sledećih ${ROUND_SIZE} – i tako u krug dok ne usavršiš gradivo.</p>
+    <ul class="small muted">
+      <li>Pitanja koja još nisi videla/video imaju prednost; pogrešno odgovorena se vraćaju češće.</li>
+      <li>Zadaci sa računanjem (Cezar, Vižner, Hil, OTP, transpozicije, stepeni dvojke…) se generišu svaki put sa novim brojevima.</li>
+      <li>Pitanja „Objasni…" (sa slajdova) samoocenjuješ prema modelu odgovora.</li>
+      <li>Statistika se čuva u ovom pretraživaču${storageOk?'':' <b>(upozorenje: čuvanje trenutno nije dostupno – koristi izvoz u Statistici)</b>'}.</li>
+    </ul>
+    <div class="row" style="margin-top:14px"><button class="btn" id="go">${o.rounds?'Počni novi test':'Počni prvi test'}</button><span class="muted small">Prečice: <kbd>1</kbd>–<kbd>4</kbd> izbor odgovora, <kbd>Enter</kbd> potvrda / dalje</span></div>
+  </div>
+  ${o.rounds?`<div class="card"><h2>Dosadašnji napredak</h2>
+    <div class="grid3">
+      <div class="stat"><b>${o.rounds}</b><span>završenih testova</span></div>
+      <div class="stat"><b>${o.n}</b><span>odgovorenih pitanja</span></div>
+      <div class="stat"><b>${pct(o.acc)}</b><span>ukupna tačnost</span></div>
+      <div class="stat"><b>${o.mastered}/${o.total}</b><span>savladanih pitanja</span></div>
+    </div>
+    <h3>Šta sada ponoviti</h3>${recHtml(rec)}</div>`:''}`;
+  $('#go').onclick=startRound;
+}
+function recHtml(rec,withNone=true){
+  if(!rec.list.length&&!rec.none.length)return `<div class="rec">Sve teme su savladane. Nastavi da vežbaš radi održavanja znanja.</div>`;
+  let h='';
+  if(rec.list.length)h+=rec.list.map(r=>`<div class="rec"><b>Ponovi:</b> <a href="${anchor(r.t.id)}" target="_blank" rel="noopener">Lekcija ${r.t.lesson} → ${tname(r.t.id)}</a> <span class="muted">(uspešnost ${pct(r.i.acc)}, odgovora: ${r.i.n})</span></div>`).join('');
+  else h+=`<div class="rec">Za sada nema tema sa slabim rezultatom – super.</div>`;
+  if(withNone&&rec.none.length)h+=`<div class="muted small">Još nisu testirane teme: ${rec.none.map(r=>r.t.id).join(', ')}.</div>`;
+  return h;
+}
+
+/* ---------- tok runde ---------- */
+function startRound(){
+  round={no:store.rounds.length+1,items:buildRound(),idx:0,res:[],t0:Date.now(),answered:false,done:false};
+  view='quiz';render();
+}
+function cur(){return round.items[round.idx];}
+function renderQuiz(){
+  const q=cur(),n=ROUND_SIZE,tp=TOPIC[q.topic];
+  const score=round.res.reduce((s,r)=>s+r.s,0);
+  app.innerHTML=`<div class="card">
+    <div class="meta"><span>Test #${round.no} · pitanje <b>${round.idx+1}</b> / ${n}</span><span>poeni: <b>${dec(score)}</b> / ${round.res.length}</span></div>
+    <div class="prog"><i style="width:${(round.idx+(round.answered?1:0))/n*100}%"></i></div>
+    <span class="chip">${tname(q.topic)}</span>${q.gen?' <span class="chip none">zadatak</span>':''}${q.type==='open'?' <span class="chip none">objasni</span>':''}
+    <div class="q">${q.q}</div>
+    <div id="ans"></div><div id="fb"></div>
+  </div>`;
+  renderAnswer();
+}
+function letter(i){return 'ABCDEF'[i];}
+function renderAnswer(){
+  const q=cur(),box=$('#ans');
+  if(q.type==='mc'){
+    box.innerHTML=`<div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${q.tf?(i+1):letter(i)}</span><span>${o.t}</span></button>`).join('')}</div>`;
+    box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answerMC(+b.dataset.i));
+  }else if(q.type==='multi'){
+    box.innerHTML=`<div class="hint">Označi sve tačne odgovore.</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false"><span class="k">${letter(i)}</span><span>${o.t}</span></button>`).join('')}</div><div style="margin-top:12px"><button class="btn" id="ok">Potvrdi</button></div>`;
+    box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{b.classList.toggle('sel');b.setAttribute('aria-pressed',b.classList.contains('sel'));});
+    $('#ok').onclick=answerMulti;
+  }else if(q.type==='in'){
+    box.innerHTML=`<input type="text" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tvoj odgovor"><div class="hint">${q.hint||''}</div><div class="row"><button class="btn" id="ok">Proveri</button><button class="btn alt" id="dk">Ne znam</button></div>`;
+    $('#ok').onclick=()=>answerIn(false);$('#dk').onclick=()=>answerIn(true);
+    setTimeout(()=>$('#inp')&&$('#inp').focus(),30);
+  }else{
+    box.innerHTML=`<div class="hint">Odgovori svojim rečima (ili samo u glavi), pa prikaži model odgovora i oceni sebe.</div><textarea id="own" placeholder="Tvoj odgovor (nije obavezno)"></textarea><div style="margin-top:10px"><button class="btn" id="show">Prikaži model odgovora</button></div>`;
+    $('#show').onclick=showOpenPoints;
+    setTimeout(()=>$('#own')&&$('#own').focus(),30);
+  }
+}
+function lockOptions(){document.querySelectorAll('#ans .opt').forEach(b=>b.disabled=true);}
+function answerMC(i){
+  if(round.answered)return;const q=cur();const ok=q.opts[i].c;
+  document.querySelectorAll('#ans .opt').forEach((b,j)=>{if(q.opts[j].c)b.classList.add('right');else if(j===i)b.classList.add('wrong');});
+  lockOptions();
+  finish(ok?1:0,`Tačan odgovor: <b>${q.answerText}</b>`);
+}
+function answerMulti(){
+  if(round.answered)return;const q=cur();const btns=[...document.querySelectorAll('#ans .opt')];
+  let hit=0,wrong=0,need=q.opts.filter(o=>o.c).length;
+  btns.forEach((b,j)=>{const sel=b.classList.contains('sel'),c=q.opts[j].c;if(sel&&c)hit++;if(sel&&!c)wrong++;
+    b.classList.remove('sel');if(c)b.classList.add('right');else if(sel)b.classList.add('wrong');});
+  lockOptions();$('#ok').disabled=true;
+  const s=Math.max(0,(hit-wrong)/need);
+  finish(Math.round(s*100)/100,`Tačni odgovori: <b>${q.answerText}</b>`);
+}
+function answerIn(dontKnow){
+  if(round.answered)return;const q=cur();const inp=$('#inp');const raw=inp.value;
+  if(!dontKnow&&!raw.trim()){inp.focus();return;}
+  const ok=!dontKnow&&q.check(raw);
+  inp.disabled=true;$('#ok').disabled=true;$('#dk').disabled=true;
+  finish(ok?1:0,`Tačan odgovor: <b class="mono">${q.answerText}</b>${(!ok&&!dontKnow)?`<br>Tvoj odgovor: <span class="mono">${esc(raw)}</span>`:''}`);
+}
+function showOpenPoints(){
+  if(round.answered)return;const q=cur();
+  $('#ans').innerHTML=`<div class="hint">Model odgovora – označi sve što je tvoj odgovor sadržao (budi iskren/a, to je jedini način da statistika bude korisna).</div><div class="pts">${q.points.map((p,i)=>`<label><input type="checkbox" data-p="${i}"><span>${p.replace(/\^(\d+)/g,'<sup>$1</sup>')}</span></label>`).join('')}</div><div style="margin-top:10px"><button class="btn" id="ok">Potvrdi samoocenu</button></div>`;
+  $('#ok').onclick=()=>{const c=[...document.querySelectorAll('.pts input')].filter(x=>x.checked).length;
+    document.querySelectorAll('.pts input').forEach(x=>x.disabled=true);$('#ok').disabled=true;
+    finish(Math.round(c/q.points.length*100)/100,`Pokrio/la si ${c} od ${q.points.length} tačaka.`);};
+}
+function finish(score,detail){
+  const q=cur();round.answered=true;
+  round.res.push({id:q.id,topic:q.topic,s:score,q:q.q,ans:q.answerText,gen:!!q.gen,open:q.type==='open',points:q.points});
+  store.log.push({t:Date.now(),r:round.no,id:q.id,topic:q.topic,s:score});save();
+  const cls=score>=0.999?'ok':score>=0.5?'mid':'bad';
+  const title=score>=0.999?'✔ Tačno':score>=0.5?`◐ Delimično (${Math.round(score*100)}%)`:'✘ Netačno';
+  const last=round.idx===ROUND_SIZE-1;
+  $('#fb').innerHTML=`<div class="fb ${cls}"><div class="t">${title}</div><p>${detail}</p>${q.expl?`<p>${q.expl}</p>`:''}<p class="small"><a href="${anchor(q.topic)}" target="_blank" rel="noopener">Pročitaj u skripti: ${tname(q.topic)}</a></p></div>
+  <div style="margin-top:14px"><button class="btn" id="next">${last?'Završi test':'Dalje →'}</button></div>`;
+  $('#next').onclick=next;$('#next').focus();
+  document.querySelector('.meta').innerHTML=`<span>Test #${round.no} · pitanje <b>${round.idx+1}</b> / ${ROUND_SIZE}</span><span>poeni: <b>${dec(round.res.reduce((s,r)=>s+r.s,0))}</b> / ${round.res.length}</span>`;
+  document.querySelector('.prog>i').style.width=((round.idx+1)/ROUND_SIZE*100)+'%';
+}
+function next(){
+  if(round.idx>=ROUND_SIZE-1){endRound();return;}
+  round.idx++;round.answered=false;renderQuiz();
+}
+
+/* ---------- kraj runde + popup ---------- */
+function endRound(){
+  round.done=true;
+  const total=round.res.reduce((s,r)=>s+r.s,0),dur=Date.now()-round.t0;
+  const prev=store.rounds[store.rounds.length-1];
+  store.rounds.push({no:round.no,t:Date.now(),sc:Math.round(total*100)/100,n:ROUND_SIZE,dur});save();
+  const D=derive(),rec=recommendations(D),ls=lessonStats(D),o=overallLine(D);
+  const byL={1:[0,0],2:[0,0],3:[0,0]};for(const r of round.res){const l=TOPIC[r.topic].lesson;byL[l][0]+=r.s;byL[l][1]++;}
+  const byT={};for(const r of round.res){(byT[r.topic]=byT[r.topic]||[0,0]);byT[r.topic][0]+=r.s;byT[r.topic][1]++;}
+  const wrong=round.res.filter(r=>r.s<0.75);
+  const p=total/ROUND_SIZE,pp=prev?Math.round((p-prev.sc/prev.n)*100):null;
+  const mm=Math.floor(dur/60000),ss=String(Math.floor(dur/1000)%60).padStart(2,'0');
+  const verdict=p>=0.9?'Odlično!':p>=0.7?'Dobro, ali ima prostora.':p>=0.5?'Treba još vežbe.':'Vrati se skripti pa probaj ponovo.';
+  dlgBody.innerHTML=`
+    <h2 style="margin-bottom:2px">Rezultat testa #${round.no}</h2>
+    <div class="row" style="align-items:flex-end;gap:18px;margin:8px 0 4px"><div class="big">${dec(total)}<span class="muted" style="font-size:22px"> / ${ROUND_SIZE}</span></div>
+      <div><b style="font-size:20px">${pct(p)}</b> – ${verdict}<br><span class="muted small">vreme ${mm}:${ss}${pp!==null?` · ${pp>=0?'+':''}${pp} p.p. u odnosu na prethodni test`:''}</span></div></div>
+    <h3>Po lekcijama (ovaj test)</h3>
+    <table class="t">${[1,2,3].map(l=>byL[l][1]?`<tr><td style="width:46%">${LESSONS[l]}</td><td style="width:90px">${dec(byL[l][0])}/${byL[l][1]}</td><td><div class="meter"><i style="width:${byL[l][0]/byL[l][1]*100}%;background:${byL[l][0]/byL[l][1]>=.75?'var(--ok)':byL[l][0]/byL[l][1]>=.5?'var(--mid)':'var(--bad)'}"></i></div></td></tr>`:`<tr><td>${LESSONS[l]}</td><td colspan="2" class="muted">nije bilo pitanja</td></tr>`).join('')}</table>
+    <h3>Šta ponoviti (na osnovu cele statistike)</h3>${recHtml(rec)}
+    ${wrong.length?`<h3>Greške u ovom testu (${wrong.length})</h3>${wrong.map(r=>`<div class="wr"><span class="chip bad">${tname(r.topic)}</span><div style="margin:4px 0">${r.open?stripTags(r.q):stripTags(r.q).slice(0,170)}</div><div><b>Tačno:</b> ${r.open?stripTags(r.ans).slice(0,260):`<span class="${r.gen?'mono':''}">${r.ans}</span>`} <a class="small" href="${anchor(r.topic)}" target="_blank" rel="noopener">skripta ↗</a></div></div>`).join('')}`:`<div class="rec" style="border-color:var(--ok);background:var(--ok-bg)">Bez grešaka u ovom testu.</div>`}
+    <h3>Ukupno do sada</h3>
+    <div class="grid3"><div class="stat"><b>${o.rounds}</b><span>testova</span></div><div class="stat"><b>${pct(o.acc)}</b><span>ukupna tačnost</span></div><div class="stat"><b>${o.mastered}/${o.total}</b><span>savladanih pitanja</span></div></div>
+    <div class="foot"><button class="btn alt" id="dStats">Detaljna statistika</button><button class="btn" id="dOk" autofocus>OK – sledećih ${ROUND_SIZE} zadataka</button></div>`;
+  $('#dOk').onclick=()=>{dlg.close();startRound();};
+  $('#dStats').onclick=()=>{dlg.close();view='stats';render();};
+  if(!dlg.open)dlg.showModal();
+  $('#dOk').focus({preventScroll:true});
+  $('.dlg').scrollTop=0;
+  view='home';
+}
+dlg.addEventListener('cancel',e=>e.preventDefault());
+
+/* ---------- statistika ---------- */
+function renderStats(){
+  const D=derive(),o=overallLine(D),rec=recommendations(D),ls=lessonStats(D);
+  const bars=store.rounds.slice(-30);
+  const chart=bars.length?`<svg viewBox="0 0 ${bars.length*22+10} 110" width="100%" height="120" role="img" aria-label="Rezultati poslednjih testova">${bars.map((r,i)=>{const p=r.sc/r.n,h=Math.max(2,p*80);return `<rect x="${i*22+6}" y="${92-h}" width="16" height="${h}" rx="3" fill="${p>=.75?'var(--ok)':p>=.5?'var(--mid)':'var(--bad)'}"><title>Test #${r.no}: ${Math.round(p*100)}%</title></rect><text x="${i*22+14}" y="106" text-anchor="middle" font-size="9" fill="currentColor" opacity=".6">${r.no}</text>`;}).join('')}<line x1="0" x2="${bars.length*22+10}" y1="${92-60}" y2="${92-60}" stroke="currentColor" stroke-dasharray="3 4" opacity=".25"/></svg>`:'<p class="muted">Još nema završenih testova.</p>';
+  app.innerHTML=`
+  <div class="card"><h1>Statistika</h1>
+    <div class="grid3">
+      <div class="stat"><b>${o.rounds}</b><span>završenih testova</span></div>
+      <div class="stat"><b>${o.n}</b><span>odgovora ukupno</span></div>
+      <div class="stat"><b>${o.n?pct(o.acc):'–'}</b><span>ukupna tačnost</span></div>
+      <div class="stat"><b>${o.mastered}/${o.total}</b><span>savladanih pitanja</span></div>
+    </div>
+    <div class="prog" style="margin-top:12px"><i style="width:${o.mastered/o.total*100}%;background:var(--ok)"></i></div>
+    <div class="muted small">Pitanje je „savladano" kada je poslednja dva puta odgovoreno tačno (≥ 75%). Zadaci sa računanjem se generišu uvek iznova pa se ne računaju u ovaj broj.</div>
+  </div>
+  <div class="card"><h2>Šta ponoviti</h2>${recHtml(rec)}</div>
+  <div class="card"><h2>Po lekcijama</h2><table class="t">${[1,2,3].map(l=>{const x=ls[l];const a=x.n?x.sum/x.n:null;return `<tr><td style="width:44%">${LESSONS[l]}</td><td style="width:70px">${a===null?'–':pct(a)}</td><td><div class="meter"><i style="width:${(a||0)*100}%;background:${a>=.75?'var(--ok)':a>=.5?'var(--mid)':'var(--bad)'}"></i></div></td></tr>`;}).join('')}</table></div>
+  <div class="card"><h2>Po temama (odeljci skripte)</h2>
+    <table class="t"><tr><th>Odeljak</th><th>Odgovora</th><th>Uspešnost (poslednjih ≤10)</th><th>Status</th></tr>
+    ${TOPICS.map(t=>{const i=topicInfo(t.id,D);return `<tr><td><a href="${anchor(t.id)}" target="_blank" rel="noopener">${tname(t.id)}</a></td><td>${i.n}</td><td style="min-width:120px">${i.acc===null?'–':`<div class="meter"><i style="width:${i.acc*100}%;background:${i.acc>=.75?'var(--ok)':i.acc>=.5?'var(--mid)':'var(--bad)'}"></i></div> <span class="small">${pct(i.acc)}</span>`}</td><td><span class="chip ${chipClass[i.status]}">${i.label}</span></td></tr>`;}).join('')}
+    </table></div>
+  <div class="card"><h2>Rezultati testova</h2>${chart}<div class="muted small">Poslednjih ${bars.length||0} testova (zeleno ≥ 75%, žuto ≥ 50%, crveno ispod; isprekidana linija = 75%).</div></div>
+  <div class="card"><h2>Podaci</h2><div class="row"><button class="btn alt sm" id="exp">Izvezi (JSON)</button><label class="btn alt sm" style="cursor:pointer">Uvezi<input type="file" id="imp" accept=".json,application/json" hidden></label><button class="btn alt sm" id="rst" style="color:var(--bad)">Obriši statistiku</button></div>
+    <div class="muted small" style="margin-top:8px">Statistika se čuva lokalno u ovom pretraživaču. Ako menjaš pretraživač ili računar, izvezi je pa uvezi.</div></div>`;
+  $('#exp').onclick=()=>{const b=new Blob([JSON.stringify(store)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='zis-statistika.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
+  $('#imp').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(o&&Array.isArray(o.log)&&Array.isArray(o.rounds)){store=o;save();render();}else alert('Neispravan fajl.');}catch(x){alert('Neispravan fajl.');}};rd.readAsText(f);};
+  $('#rst').onclick=()=>{if(confirm('Obrisati svu statistiku? Ovo se ne može poništiti.')){store={v:1,log:[],rounds:[]};save();round=null;render();}};
+}
+
+/* ---------- tastatura ---------- */
+document.addEventListener('keydown',e=>{
+  if(dlg.open||view!=='quiz'||!round||e.ctrlKey||e.metaKey||e.altKey)return;
+  const q=cur(),tag=(e.target.tagName||'').toLowerCase();
+  if(e.key==='Enter'){
+    if(round.answered){e.preventDefault();next();return;}
+    if(q.type==='in'){e.preventDefault();answerIn(false);return;}
+    if(q.type==='multi'){e.preventDefault();answerMulti();return;}
+    return;
+  }
+  if(tag==='input'||tag==='textarea')return;
+  if(!round.answered&&(q.type==='mc'||q.type==='multi')){
+    const i=(e.key>='1'&&e.key<='6')?+e.key-1:'abcdef'.indexOf(e.key.toLowerCase());
+    if(i>=0&&i<q.opts.length){e.preventDefault();if(q.type==='mc')answerMC(i);else{const b=document.querySelectorAll('#ans .opt')[i];b.classList.toggle('sel');}}
+  }
+});
+
+/* =====================================================================
+   SAMOPROVERA (otvori ZIS_Test_znanja.html#selftest)
+   ===================================================================== */
+function selftest(){
+  const out=[];let bad=0;const fail=m=>{bad++;out.push('✘ '+m);};
+  const eq=(name,a,b)=>{if(a!==b)fail(`${name}: dobijeno ${a}, očekivano ${b}`);};
+  /* poznati primeri sa slajdova */
+  eq('Cezar dešifrovanje',caesar('CSYEVIXIVQMREXIH',-4),'YOUARETERMINATED');
+  eq('Cezar Z+4',caesar('Z',4),'D');eq('Cezar A-4',caesar('A',-4),'W');
+  eq('Vižner LIMUN',vig('NAPADIUZORU','LIMUN',1),'YIBUQTCLIEF');
+  eq('Hil MEETMEHERE',hillText('MEETMEHERE',[[22,13],[11,5]]),'EWXJEWYTKZ');
+  eq('Transpozicija 3x7',colTransp('OCEKUJEMMIHOLJSKOLETO',7),'OMSCMKEIOKHLUOEJLTEJO');
+  eq('Transpozicija KOSA',colTransp('OCEKUJEMMIHOLJSKOLETO',4,keyOrder('KOSA')),'KMOKTOUMLOOCJIJLEEHSE');
+  eq('Skitala obim 4 (4 reda x 6 kolona)',colTransp('OCEKUJEMMIHOLJSKOLETO',6),'OELECMJTEMSOKIKUHOJOL');
+  eq('Dvostruka transpozicija',doubleTransp('ATTACKXATXDAWNX',5,3,[2,4,0,3,1],[0,2,1]),'XTAWXNATTXADAKC');
+  eq('OTP THREEHILLS',[...'THREEHILLS'].map((p,i)=>OTPA[parseInt(xorStr(bin3(p),bin3('TRSRTLERSE'[i])),2)]).join(''),'ELKRTRIHIS');
+  eq('Homofona TEETH',[...'TEETH'].map(l=>HOMO[l][0]).join(' ').replace(/\s/g,'').length,10);
+  eq('Atbaš',atbash('ABCDEFGH'),'ZYXWVUTS');
+  eq('Hil inverz',JSON.stringify(hillInv([[22,13],[11,5]])),JSON.stringify([[3,13],[9,8]]));
+  eq('Homofona – 32 jedinstvena koda',Object.keys(HOMO_REV).length,32);
+  /* banka pitanja */
+  const ids=new Set();
+  for(const q of BANK){
+    if(ids.has(q.id))fail('duplikat id '+q.id);ids.add(q.id);
+    if(!TOPIC[q.topic])fail('nepoznata tema '+q.id);
+    if(!q.q)fail('prazan tekst '+q.id);
+    if(q.type==='mc'){if(new Set(q.o).size!==q.o.length)fail('duplirane opcije '+q.id);if(q.o.length<2)fail('premalo opcija '+q.id);}
+    if(q.type==='multi'&&(q.rights.length<1||q.wrongs.length<1))fail('multi '+q.id);
+    if(q.type==='open'&&!(q.points&&q.points.length>=2))fail('open bez tačaka '+q.id);
+    if(q.type==='in'){const x=instantiate({kind:'s',ref:q});if(!x.check(q.answers[0]))fail('in odgovor ne prolazi '+q.id);}
+  }
+  /* generatori */
+  for(const g of GENS){
+    if(!TOPIC[g.topic])fail('gen tema '+g.id);
+    for(let i=0;i<400;i++){
+      let x;try{x=g.make();}catch(e){fail(`${g.id} izuzetak: ${e.message}`);break;}
+      if(!x.q||!x.expl||!x.answerText||typeof x.check!=='function'){fail(`${g.id} nepotpun`);break;}
+      if(!x.check(x.answerText)){fail(`${g.id} sopstveni odgovor ne prolazi: ${x.answerText}`);break;}
+      if(/NaN|undefined/.test(x.q+x.expl+x.answerText)){fail(`${g.id} NaN/undefined`);break;}
+      if(x.check('')||x.check('   ')){fail(`${g.id} prihvata prazan odgovor`);break;}
+    }
+  }
+  /* razmeštaj opcija ne sme da menja tačnost */
+  for(let i=0;i<200;i++){const it=instantiate({kind:'s',ref:BANK.find(b=>b.type==='mc')});if(it.opts.filter(o=>o.c).length!==1){fail('mc broj tačnih != 1');break;}}
+  /* biranje runde */
+  for(let i=0;i<50;i++){const r=buildRound();if(r.length!==ROUND_SIZE||new Set(r.map(x=>x.id)).size!==ROUND_SIZE){fail('runda ima duplikate/pogrešan broj');break;}}
+  const perTopic={};for(const q of BANK)perTopic[q.topic]=(perTopic[q.topic]||0)+1;
+  for(const t of TOPICS)if(!perTopic[t.id]&&!GENS.some(g=>g.topic===t.id))fail('tema bez pitanja '+t.id);
+  const summary=`pitanja: ${BANK.length} (open ${BANK.filter(q=>q.type==='open').length}), generatora: ${GENS.length}, grešaka: ${bad}`;
+  return {bad,summary,perTopic,out};
+}
+window.__selftest=selftest;
+
+/* ---------- start ---------- */
+load();
+if(location.hash==='#selftest'){
+  const r=selftest();
+  app.innerHTML=`<div class="card"><h1>Samoprovera</h1><p><b>${r.summary}</b></p><pre style="white-space:pre-wrap">${esc(r.out.join('\n')||'Sve provere prošle.')}</pre><pre>${esc(JSON.stringify(r.perTopic))}</pre></div>`;
+  setTab();
+}else render();
+</script>
+</body>
+</html>
